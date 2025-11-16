@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MyShop.Entities.Models.ShoppingCart>
+@using MyShop.Utilities
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+    Layout = "_LayoutWithSidebar";
+    decimal total = 0;
+        }
+
+@using (Html.BeginForm()) { }
+
+<h2 class="text-center">🛒 Shopping Cart</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center mt-4">
+        Your cart is empty.
+                                    </div>
+                                }
+else
+                                {
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th style="width:180px;">Quantity</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var subTotal = item.Count * item.Product.Price;
+                total += subTotal;
+                <tr id="row-@item.Id">
+                    <td>@item.Product.Name</td>
+                    <td>@CurrencyHelper.FormatCurrency(item.Product.Price)</td>
+                    <td>
+                        <div class="input-group">
+                            <form asp-action="Minus" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartId" value="@item.Id" />
+                                <button type="submit" class="btn btn-outline-secondary">-</button>
+                            </form>
+                            <span class="mx-2 align-self-center">@item.Count</span>
+                            <form asp-action="Plus" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartId" value="@item.Id" />
+                                <button type="submit" class="btn btn-outline-secondary">+</button>
+                                </form>
+                        </div>
+                    </td>
+                    <td>@CurrencyHelper.FormatCurrency(subTotal)</td>
+                    <td>
+                        <form asp-action="Remove" asp-route-cartId="@item.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-end mt-3">
+        <h4>Total: <span id="cart-total">@CurrencyHelper.FormatCurrency(total)</span></h4>
+    </div>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-primary" asp-action="Summary">Checkout</a>
+        <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Continue Shopping</a>
+    </div>
+}

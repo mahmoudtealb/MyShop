@@ -1,0 +1,441 @@
+﻿@model MyShop.Entities.Models.ShoppingCart
+@using MyShop.Utilities
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "_LayoutWithSidebar";
+}
+
+@if (Model?.Product == null)
+{
+    <div class="container mt-4">
+        <div class="alert alert-danger text-center">
+            <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
+            <h4>Product Not Found</h4>
+            <p>The requested product could not be found.</p>
+            <a asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Products
+            </a>
+        </div>
+    </div>
+    return;
+}
+
+<style>
+    .product-details-container {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .product-image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .product-image-container:hover {
+        transform: scale(1.02);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    }
+    
+    .product-info-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: none;
+        overflow: hidden;
+    }
+    
+    .product-title {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .price-badge {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        display: inline-block;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .category-badge {
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .quantity-controls {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        border: 2px solid #e9ecef;
+    }
+    
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        color: white;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+    
+    .quantity-input {
+        border: none;
+        background: white;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        border-radius: 10px;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-add-cart {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-add-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+    }
+    
+    .breadcrumb-custom {
+        background: white;
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item.active {
+        color: #6c757d;
+        font-weight: bold;
+    }
+    
+    .product-description {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        border-left: 4px solid #007bff;
+    }
+    
+    .product-info-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .info-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+    }
+    
+    .info-content {
+        padding: 1.5rem;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .info-value {
+        color: #6c757d;
+        font-weight: 500;
+    }
+</style>
+
+<div class="product-details-container">
+    <div class="container">
+        <!-- Success/Error Messages -->
+        @if (TempData["success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@TempData["success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>@TempData["error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="breadcrumb-custom">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a asp-action="Index">
+                        <i class="fas fa-home me-1"></i>Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">
+                        <i class="fas fa-tag me-1"></i>@Model.Product.Category?.Name
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="fas fa-box me-1"></i>@Model.Product.Name
+                </li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-image-container">
+                    <img src="~/@Model.Product.Img" class="product-image" alt="@Model.Product.Name">
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-lg-6 mb-4">
+                <div class="product-info-card">
+                    <div class="product-title">
+                        <h2 class="mb-0">
+                            <i class="fas fa-box me-2"></i>@Model.Product.Name
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <div class="mb-4 text-center">
+                            <span class="category-badge">
+                                <i class="fas fa-tag me-1"></i>@Model.Product.Category?.Name
+                            </span>
+                        </div>
+
+                        <div class="mb-4 text-center">
+                            <div class="price-badge">
+                                @CurrencyHelper.FormatCurrency(Model.Product.Price)
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="mb-3">
+                                <i class="fas fa-info-circle me-2 text-primary"></i>Description
+                            </h5>
+                            <div class="product-description">
+                                <p class="mb-0">@Model.Product.Discription</p>
+                            </div>
+                        </div>
+
+                        <form asp-action="Details" method="post">
+                            <input type="hidden" asp-for="ProductId" value="@Model.Product.Id" />
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-sort-numeric-up me-2 text-primary"></i>Quantity
+                                </label>
+                                <div class="quantity-controls">
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" class="quantity-input" asp-for="Count" min="1" max="99" id="quantityInput" style="width: 80px;">
+                                        <button type="button" class="quantity-btn" onclick="increaseQuantity()">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button type="submit" class="btn btn-add-cart w-100 mb-3">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                                <a asp-action="Index" class="btn btn-back w-100">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Products
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Product Information -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="product-info-section">
+                    <div class="info-header">
+                        <i class="fas fa-info-circle me-2"></i>Product Information
+                    </div>
+                    <div class="info-content">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span class="info-label">
+                                        <i class="fas fa-tag me-2 text-primary"></i>Category
+                                    </span>
+                                    <span class="info-value">@Model.Product.Category?.Name</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span class="info-label">
+                                        <i class="fas fa-hashtag me-2 text-primary"></i>Product ID
+                                    </span>
+                                    <span class="info-value">#@Model.Product.Id</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span class="info-label">
+                                        <i class="fas fa-dollar-sign me-2 text-primary"></i>Price
+                                    </span>
+                                    <span class="info-value">@CurrencyHelper.FormatCurrency(Model.Product.Price)</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span class="info-label">
+                                        <i class="fas fa-calendar me-2 text-primary"></i>Added Date
+                                    </span>
+                                    <span class="info-value">@DateTime.Now.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enhanced quantity controls with animations
+        function increaseQuantity() {
+            const input = document.getElementById('quantityInput');
+            const currentValue = parseInt(input.value) || 1;
+            if (currentValue < 99) {
+                input.value = currentValue + 1;
+                animateQuantityChange(input, 'increase');
+            }
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('quantityInput');
+            const currentValue = parseInt(input.value) || 1;
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                animateQuantityChange(input, 'decrease');
+            }
+        }
+
+        function animateQuantityChange(input, direction) {
+            input.style.transform = direction === 'increase' ? 'scale(1.1)' : 'scale(0.9)';
+            input.style.transition = 'transform 0.2s ease';
+            
+            setTimeout(() => {
+                input.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Update quantity when input changes
+        document.getElementById('quantityInput').addEventListener('change', function() {
+            const value = parseInt(this.value) || 1;
+            if (value < 1) this.value = 1;
+            if (value > 99) this.value = 99;
+        });
+
+        // Add smooth scrolling to top when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Add loading animation to form submission
+        document.querySelector('form').addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding to Cart...';
+            submitBtn.disabled = true;
+            
+            // Re-enable after 3 seconds if no redirect
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+    </script>
+}

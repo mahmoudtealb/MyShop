@@ -1,0 +1,1145 @@
+@using MyShop.Utilities
+@model MyShop.Entities.ViewModels.OrderVM
+@{
+    ViewBag.PageTitle = "تفاصيل الطلب";
+    ViewBag.CardTitle = "تفاصيل الطلب";
+    Layout = "_LayoutWithSidebar";
+}
+
+<!-- Header Section with Gradient Background -->
+<div class="order-header-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="order-icon-wrapper me-3">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <div>
+                <h2 class="mb-0 text-white fw-bold">تفاصيل الطلب</h2>
+                <p class="mb-0 text-white-50">Order #@Model.OrderHeader.Id</p>
+            </div>
+        </div>
+        <a href="@Url.Action("Index", "Order")" class="btn btn-light btn-lg px-4">
+            <i class="fas fa-arrow-left me-2"></i> العودة للطلبات
+        </a>
+    </div>
+</div>
+
+<!-- Order Status Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="order-status-banner @(Model.OrderHeader.OrderStatus == "Pending" ? "status-pending" : 
+                                          Model.OrderHeader.OrderStatus == "Approved" ? "status-approved" : 
+                                          Model.OrderHeader.OrderStatus == "In Process" ? "status-processing" : 
+                                          Model.OrderHeader.OrderStatus == "Shipped" ? "status-shipped" : 
+                                          Model.OrderHeader.OrderStatus == "Cancelled" ? "status-cancelled" : "status-default")">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="status-icon me-3">
+                        @if (Model.OrderHeader.OrderStatus == "Pending")
+                        {
+                            <i class="fas fa-clock"></i>
+                        }
+                        else if (Model.OrderHeader.OrderStatus == "Approved")
+                        {
+                            <i class="fas fa-check-circle"></i>
+                        }
+                        else if (Model.OrderHeader.OrderStatus == "In Process")
+                        {
+                            <i class="fas fa-cog fa-spin"></i>
+                        }
+                        else if (Model.OrderHeader.OrderStatus == "Shipped")
+                        {
+                            <i class="fas fa-shipping-fast"></i>
+                        }
+                        else if (Model.OrderHeader.OrderStatus == "Cancelled")
+                        {
+                            <i class="fas fa-times-circle"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-question-circle"></i>
+                        }
+                    </div>
+                    <div>
+                        <h4 class="mb-1 text-white fw-bold">@Model.OrderHeader.OrderStatus</h4>
+                        <p class="mb-0 text-white-50">حالة الطلب الحالية</p>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="order-date text-white-50">@Model.OrderHeader.OrderDate.ToString("dd MMMM yyyy")</div>
+                    <div class="order-time text-white-50">@Model.OrderHeader.OrderDate.ToString("HH:mm")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Customer Information -->
+    <div class="col-lg-4 mb-4">
+        <div class="card info-card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>معلومات العميل
+            </h5>
+            </div>
+            <div class="card-body">
+                <div class="customer-info">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-user-circle me-2"></i>الاسم
+                        </div>
+                        <div class="info-value">@Model.OrderHeader.Name</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-phone me-2"></i>رقم الهاتف
+                        </div>
+                        <div class="info-value">@Model.OrderHeader.Phone</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-envelope me-2"></i>البريد الإلكتروني
+                        </div>
+                        <div class="info-value">@(Model.OrderHeader.ApplicationUser?.Email ?? "غير متوفر")</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-map-marker-alt me-2"></i>العنوان
+                        </div>
+                        <div class="info-value">@Model.OrderHeader.Address</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-city me-2"></i>المدينة
+                        </div>
+                        <div class="info-value">@Model.OrderHeader.City</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-lg-4 mb-4">
+        <div class="card summary-card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calculator me-2"></i>ملخص الطلب
+            </h5>
+            </div>
+            <div class="card-body">
+                <div class="summary-details">
+                    <div class="summary-item">
+                        <span class="summary-label">رقم الطلب</span>
+                        <span class="summary-value order-number">#@Model.OrderHeader.Id</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">تاريخ الطلب</span>
+                        <span class="summary-value">@Model.OrderHeader.OrderDate.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">وقت الطلب</span>
+                        <span class="summary-value">@Model.OrderHeader.OrderDate.ToString("HH:mm")</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">عدد المنتجات</span>
+                        <span class="summary-value">@Model.OrderDetails.Count() منتج</span>
+                    </div>
+                    <hr class="my-3">
+                    <div class="summary-item total-item">
+                        <span class="summary-label">المجموع الكلي</span>
+                        <span class="summary-value total-price">@CurrencyHelper.FormatCurrency(Model.OrderHeader.TotalPrice)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment & Shipping Info -->
+    <div class="col-lg-4 mb-4">
+        <div class="card payment-card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-credit-card me-2"></i>معلومات الدفع والشحن
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="payment-info">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-credit-card me-2"></i>حالة الدفع
+                        </div>
+                        <div class="info-value">
+                            <span class="badge @(Model.OrderHeader.PaymentStatus == "Pending" ? "bg-warning" : 
+                                                  Model.OrderHeader.PaymentStatus == "Approved" ? "bg-success" : 
+                                                  Model.OrderHeader.PaymentStatus == "Refunded" ? "bg-info" : "bg-secondary")">
+                                @(Model.OrderHeader.PaymentStatus ?? "غير محدد")
+                            </span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.OrderHeader.TrackingNumber))
+                    {
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-truck me-2"></i>رقم التتبع
+                            </div>
+                            <div class="info-value tracking-number">@Model.OrderHeader.TrackingNumber</div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.OrderHeader.Carrier))
+                    {
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-shipping-fast me-2"></i>شركة الشحن
+                            </div>
+                            <div class="info-value">@Model.OrderHeader.Carrier</div>
+                        </div>
+                    }
+                    @if (Model.OrderHeader.ShippingDate.HasValue)
+                    {
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar me-2"></i>تاريخ الشحن
+                            </div>
+                            <div class="info-value">@Model.OrderHeader.ShippingDate.Value.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Items Section -->
+<div class="card products-card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-shopping-bag me-2"></i>منتجات الطلب
+            <span class="badge bg-primary ms-2">@Model.OrderDetails.Count() منتج</span>
+    </h5>
+    </div>
+    <div class="card-body p-0">
+    @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+    {
+        <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="product-col">المنتج</th>
+                            <th class="name-col">الاسم والوصف</th>
+                            <th class="quantity-col">الكمية</th>
+                            <th class="price-col">السعر</th>
+                            <th class="total-col">المجموع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                            <tr class="product-row">
+                                <td class="product-image-cell">
+                                    <div class="product-image-wrapper">
+                                        @if (!string.IsNullOrEmpty(item.Product?.Img))
+                                        {
+                                            <img src="~/@item.Product.Img" alt="@item.Product.Name" 
+                                                 class="product-image">
+                                }
+                                else
+                                {
+                                            <div class="no-image-placeholder">
+                                                <i class="fas fa-image"></i>
+                                    </div>
+                                }
+                                    </div>
+                            </td>
+                                <td class="product-info-cell">
+                                    <div class="product-name">@(item.Product?.Name ?? "منتج غير موجود")</div>
+                                    @if (item.Product != null && !string.IsNullOrEmpty(item.Product.Discription))
+                                    {
+                                        <div class="product-description">@item.Product.Discription</div>
+                                }
+                            </td>
+                                <td class="quantity-cell">
+                                    <div class="quantity-badge">
+                                        <i class="fas fa-hashtag me-1"></i>@item.Count
+                                    </div>
+                                </td>
+                                <td class="price-cell">
+                                    <div class="price-amount">@CurrencyHelper.FormatCurrency(item.Price)</div>
+                                </td>
+                                <td class="total-cell">
+                                    <div class="total-amount">@CurrencyHelper.FormatCurrency(item.Price * item.Count)</div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+            <div class="order-total-section">
+                <div class="total-row">
+                    <div class="total-label">المجموع الكلي:</div>
+                    <div class="total-value">@CurrencyHelper.FormatCurrency(Model.OrderHeader.TotalPrice)</div>
+                </div>
+        </div>
+    }
+    else
+    {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h6 class="empty-title">لا توجد منتجات في هذا الطلب</h6>
+                <p class="empty-message">لم يتم العثور على أي منتجات مرتبطة بهذا الطلب.</p>
+        </div>
+    }
+    </div>
+</div>
+
+<!-- Action Buttons Section -->
+<div class="action-buttons-section">
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="@Url.Action("Index", "Order")" class="btn btn-outline-secondary btn-lg">
+            <i class="fas fa-arrow-left me-2"></i> العودة للطلبات
+        </a>
+        
+        <div class="action-buttons">
+        @if (Model.OrderHeader.OrderStatus == "Pending")
+        {
+                <button type="button" class="btn btn-success btn-lg me-3" onclick="updateOrderStatus(@Model.OrderHeader.Id, 'Approved')">
+                    <i class="fas fa-check me-2"></i> الموافقة على الطلب
+            </button>
+                <button type="button" class="btn btn-danger btn-lg" onclick="updateOrderStatus(@Model.OrderHeader.Id, 'Cancelled')">
+                    <i class="fas fa-times me-2"></i> إلغاء الطلب
+            </button>
+        }
+        else if (Model.OrderHeader.OrderStatus == "Approved")
+        {
+                <button type="button" class="btn btn-info btn-lg" onclick="updateOrderStatus(@Model.OrderHeader.Id, 'In Process')">
+                    <i class="fas fa-cog me-2"></i> بدء المعالجة
+            </button>
+        }
+        else if (Model.OrderHeader.OrderStatus == "In Process")
+        {
+                <button type="button" class="btn btn-primary btn-lg" onclick="updateOrderStatus(@Model.OrderHeader.Id, 'Shipped')">
+                    <i class="fas fa-shipping-fast me-2"></i> تم الشحن
+            </button>
+        }
+    </div>
+</div>
+</div>
+
+@section Styles {
+    <style>
+        /* Order Header Section */
+        .order-header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .order-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Order Status Banner */
+        .order-status-banner {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-pending { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .status-approved { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .status-processing { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .status-shipped { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .status-cancelled { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); }
+        .status-default { background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%); }
+
+        .status-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        /* Cards Styling */
+        .info-card, .summary-card, .payment-card, .products-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover, .summary-card:hover, .payment-card:hover, .products-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        /* Info Items */
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #6c757d;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-value {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        /* Summary Items */
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .summary-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        .total-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .total-price {
+            color: #007bff;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .order-number {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .tracking-number {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        /* Table Styling */
+        .table-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .table-header th {
+            border: none;
+            color: #495057;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .product-row {
+            transition: background-color 0.3s ease;
+        }
+
+        .product-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        .product-image-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 24px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-description {
+            color: #6c757d;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .quantity-badge {
+            background: #007bff;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .price-amount, .total-amount {
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .total-amount {
+            color: #007bff;
+            font-size: 1.1rem;
+        }
+
+        /* Order Total Section */
+        .order-total-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .total-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .price-amount, .total-amount {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .total-price {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-message {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        /* Action Buttons */
+        .action-buttons-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        .action-buttons .btn {
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .order-header-section {
+                padding: 1.5rem;
+            }
+            
+            .order-icon-wrapper {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .action-buttons-section {
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        /* Column Widths */
+        .product-col { width: 120px; }
+        .name-col { width: 40%; }
+        .quantity-col { width: 100px; }
+        .price-col { width: 120px; }
+        .total-col { width: 120px; }
+
+        /* Custom Modal Styles */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.7) translateY(50px);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-overlay.show .custom-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .custom-modal-header {
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .custom-modal-body {
+            padding: 2rem;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            color: #495057;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .modal-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .status-badge {
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .custom-modal-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .custom-modal-footer .btn {
+            min-width: 120px;
+            border-radius: 25px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal-footer .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Custom Notification Styles */
+        .custom-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            max-width: 400px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(450px);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .custom-notification.show {
+            transform: translateX(0);
+        }
+
+        .custom-notification.success {
+            border-left-color: #28a745;
+        }
+
+        .custom-notification.error {
+            border-left-color: #dc3545;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .custom-notification.success .notification-icon {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .custom-notification.error .notification-icon {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .custom-notification.success .notification-title {
+            color: #28a745;
+        }
+
+        .custom-notification.error .notification-title {
+            color: #dc3545;
+        }
+
+        .notification-message {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .notification-close:hover {
+            background: #f8f9fa;
+            color: #495057;
+        }
+
+        /* Loading Animation */
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Keyframes Animation */
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .custom-modal {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .custom-modal-header {
+                padding: 1.5rem;
+            }
+            
+            .custom-modal-body {
+                padding: 1.5rem;
+            }
+            
+            .custom-modal-footer {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+            }
+            
+            .custom-modal-footer .btn {
+                width: 100%;
+            }
+            
+            .custom-notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                transform: translateY(-100px);
+            }
+            
+            .custom-notification.show {
+                transform: translateY(0);
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function updateOrderStatus(orderId, status) {
+            const statusText = {
+                'Approved': 'الموافقة على',
+                'Cancelled': 'إلغاء',
+                'In Process': 'بدء معالجة',
+                'Shipped': 'تم شحن'
+            };
+            
+            const statusIcons = {
+                'Approved': 'fas fa-check-circle',
+                'Cancelled': 'fas fa-times-circle',
+                'In Process': 'fas fa-cog',
+                'Shipped': 'fas fa-shipping-fast'
+            };
+            
+            const statusColors = {
+                'Approved': '#28a745',
+                'Cancelled': '#dc3545',
+                'In Process': '#17a2b8',
+                'Shipped': '#007bff'
+            };
+            
+            // إنشاء modal مخصص بدلاً من alert
+            const modalHtml = `
+                <div class="custom-modal-overlay" id="statusModal">
+                    <div class="custom-modal">
+                        <div class="custom-modal-header" style="background: ${statusColors[status] || '#007bff'}">
+                            <div class="modal-icon">
+                                <i class="${statusIcons[status] || 'fas fa-question-circle'}"></i>
+                            </div>
+                            <h4 class="modal-title">تأكيد العملية</h4>
+                        </div>
+                        <div class="custom-modal-body">
+                            <p class="modal-message">
+                                هل أنت متأكد من ${statusText[status] || status.toLowerCase()} هذا الطلب؟
+                            </p>
+                            <div class="modal-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">رقم الطلب:</span>
+                                    <span class="detail-value">#${orderId}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">الحالة الجديدة:</span>
+                                    <span class="detail-value status-badge" style="background: ${statusColors[status] || '#007bff'}">
+                                        ${statusText[status] || status}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="custom-modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeStatusModal()">
+                                <i class="fas fa-times me-2"></i>إلغاء
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="confirmStatusUpdate(${orderId}, '${status}')">
+                                <i class="fas fa-check me-2"></i>تأكيد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // إضافة modal إلى الصفحة
+            $('body').append(modalHtml);
+            
+            // إضافة تأثيرات الحركة
+            setTimeout(() => {
+                $('#statusModal').addClass('show');
+            }, 10);
+        }
+        
+        function closeStatusModal() {
+            $('#statusModal').removeClass('show');
+            setTimeout(() => {
+                $('#statusModal').remove();
+            }, 300);
+        }
+        
+        function confirmStatusUpdate(orderId, status) {
+            // إظهار loading
+            const confirmBtn = $('.custom-modal-footer .btn-primary');
+            const originalText = confirmBtn.html();
+            confirmBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>جاري المعالجة...');
+            confirmBtn.prop('disabled', true);
+            
+                $.ajax({
+                    url: '@Url.Action("UpdateOrderStatus", "Order")',
+                    type: 'POST',
+                    data: {
+                        orderId: orderId,
+                        status: status,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                        // إظهار رسالة نجاح
+                        showSuccessMessage('تم تحديث حالة الطلب بنجاح!');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                        } else {
+                        showErrorMessage('خطأ: ' + response.message);
+                        confirmBtn.html(originalText);
+                        confirmBtn.prop('disabled', false);
+                        }
+                    },
+                    error: function() {
+                    showErrorMessage('حدث خطأ أثناء تحديث حالة الطلب.');
+                    confirmBtn.html(originalText);
+                    confirmBtn.prop('disabled', false);
+                    }
+                });
+            }
+        
+        function showSuccessMessage(message) {
+            showNotification(message, 'success');
+        }
+        
+        function showErrorMessage(message) {
+            showNotification(message, 'error');
+        }
+        
+        function showNotification(message, type) {
+            const notificationHtml = `
+                <div class="custom-notification ${type}" id="notification">
+                    <div class="notification-icon">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <h6 class="notification-title">${type === 'success' ? 'نجح!' : 'خطأ!'}</h6>
+                        <p class="notification-message">${message}</p>
+                    </div>
+                    <button class="notification-close" onclick="closeNotification()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            $('body').append(notificationHtml);
+            
+            setTimeout(() => {
+                $('#notification').addClass('show');
+            }, 10);
+            
+            // إزالة الإشعار تلقائياً بعد 5 ثوان
+            setTimeout(() => {
+                closeNotification();
+            }, 5000);
+        }
+        
+        function closeNotification() {
+            $('#notification').removeClass('show');
+            setTimeout(() => {
+                $('#notification').remove();
+            }, 300);
+        }
+        
+        // إغلاق modal عند الضغط على الخلفية
+        $(document).on('click', '.custom-modal-overlay', function(e) {
+            if (e.target === this) {
+                closeStatusModal();
+            }
+        });
+        
+        // إغلاق modal بمفتاح ESC
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape' && $('#statusModal').length) {
+                closeStatusModal();
+            }
+        });
+    </script>
+}
+
+
+
+
+

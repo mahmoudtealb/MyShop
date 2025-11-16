@@ -1,0 +1,95 @@
+﻿@model MyShop.Entities.ViewModels.ProductVM
+
+@{
+    ViewBag.PageTitle = "Product Management";
+    ViewBag.CardTitle = "Product Category";
+    Layout = "_LayoutWithSidebar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0 text-primary d-flex align-items-center gap-2">
+        <i class="fas fa-plus-circle"></i> @ViewBag.CardTitle
+    </h2>
+    <a asp-action="Index" class="btn btn-secondary d-flex align-items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="card shadow-sm rounded-4 p-4">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Left Form -->
+            <div class="col-md-7">
+                <div class="mb-3">
+                    <label asp-for="Product.Name" class="form-label d-flex align-items-center gap-1">
+                        <i class="fas fa-tag"></i> اسم المنتج
+                    </label>
+                    <input asp-for="Product.Name" class="form-control" />
+                    <span asp-validation-for="Product.Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Product.Discription" class="form-label d-flex align-items-center gap-1">
+                        <i class="fas fa-align-left"></i> الوصف
+                    </label>
+                    <textarea asp-for="Product.Discription" class="form-control"></textarea>
+                    <span asp-validation-for="Product.Discription" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Product.Price" class="form-label d-flex align-items-center gap-1">
+                        <i class="fas fa-dollar-sign"></i> السعر
+                    </label>
+                    <input asp-for="Product.Price" class="form-control" />
+                    <span asp-validation-for="Product.Price" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Product.CategoryId" class="form-label d-flex align-items-center gap-1">
+                        <i class="fas fa-list"></i> التصنيف
+                    </label>
+                    <select asp-for="Product.CategoryId" class="form-control" asp-items="Model.CategoryList">
+                        <option disabled selected>-- Select Category --</option>
+                    </select>
+                    <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Product.Img" class="form-label d-flex align-items-center gap-1">
+                        <i class="fas fa-image"></i> صورة المنتج
+                    </label>
+                    <input type="file" name="file" id="imgfile" class="form-control" onchange="previewImage(event)" />
+                    <span asp-validation-for="Product.Img" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                        <i class="fas fa-check"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-warning d-flex align-items-center gap-1">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Image Preview -->
+            <div class="col-md-5 d-flex align-items-start justify-content-center">
+                <img id="imgPreview" src="https://via.placeholder.com/250" alt="Image Preview" class="img-fluid rounded border shadow-sm" style="max-width: 100%; height: auto; background: #f6f8fa;" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('imgPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}

@@ -1,0 +1,246 @@
+﻿@model MyShop.Entities.ViewModels.ShoppindCartVM
+@using MyShop.Utilities
+
+@{
+    ViewData["Title"] = "Order Summary";
+    Layout = "_LayoutWithSidebar";
+}
+
+<style>
+    /* Shipping Information Card Styling */
+    .shipping-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .shipping-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .shipping-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1.25rem;
+    }
+
+    .shipping-card .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .shipping-card .card-body {
+        padding: 1.75rem;
+        background: #f8f9fa;
+    }
+
+    .shipping-card .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .shipping-card .form-label i {
+        color: #667eea;
+        width: 20px;
+        text-align: center;
+    }
+
+    .shipping-card .form-control,
+    .shipping-card .form-select {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .shipping-card .form-control:focus,
+    .shipping-card .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        outline: none;
+    }
+
+    .shipping-card textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .shipping-card .btn-success {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .shipping-card .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+    }
+
+    .shipping-card .btn-secondary {
+        border-radius: 12px;
+        padding: 0.75rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .shipping-card .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .shipping-card hr {
+        border: none;
+        border-top: 2px solid #e2e8f0;
+        margin: 1.5rem 0;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">📋 Order Summary</h2>
+
+    @if (Model.CartsList.Any())
+    {
+        <div class="row">
+            <!-- Order Details -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🛒 Cart Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CartsList)
+                                {
+                                    <tr>
+                                        <td>@item.Product.Name</td>
+                                        <td>@CurrencyHelper.FormatCurrency(item.Product.Price)</td>
+                                        <td>@item.Count</td>
+                                        <td>@CurrencyHelper.FormatCurrency(item.Count * item.Product.Price)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="text-end mt-3">
+                            <h4>Total: @CurrencyHelper.FormatCurrency(Model.TotalCarts)</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="col-lg-4">
+                <div class="card shipping-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shipping-fast"></i>
+                            Shipping Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Summary" method="post">
+                            @Html.AntiForgeryToken()
+                            
+                            <div class="mb-4">
+                                <label class="form-label" asp-for="OrderHeader.Name">
+                                    <i class="fas fa-user"></i>
+                                    Full Name
+                                </label>
+                                <input type="text" class="form-control" asp-for="OrderHeader.Name" value="@Model.OrderHeader.Name" placeholder="Enter your full name" required />
+                                <span asp-validation-for="OrderHeader.Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" asp-for="OrderHeader.Phone">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" class="form-control" asp-for="OrderHeader.Phone" value="@Model.OrderHeader.Phone" placeholder="Enter your phone number" required />
+                                <span asp-validation-for="OrderHeader.Phone" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" asp-for="OrderHeader.City">
+                                    <i class="fas fa-city"></i>
+                                    City
+                                </label>
+                                <select class="form-select" asp-for="OrderHeader.City" required>
+                                    <option value="">Select City</option>
+                                    <option value="Cairo" selected="@(Model.OrderHeader.City == "Cairo")">Cairo</option>
+                                    <option value="Alexandria" selected="@(Model.OrderHeader.City == "Alexandria")">Alexandria</option>
+                                    <option value="Giza" selected="@(Model.OrderHeader.City == "Giza")">Giza</option>
+                                    <option value="Sharm El Sheikh" selected="@(Model.OrderHeader.City == "Sharm El Sheikh")">Sharm El Sheikh</option>
+                                    <option value="Luxor" selected="@(Model.OrderHeader.City == "Luxor")">Luxor</option>
+                                    <option value="Aswan" selected="@(Model.OrderHeader.City == "Aswan")">Aswan</option>
+                                    <option value="Hurghada" selected="@(Model.OrderHeader.City == "Hurghada")">Hurghada</option>
+                                    <option value="Other" selected="@(Model.OrderHeader.City == "Other")">Other</option>
+                                </select>
+                                <span asp-validation-for="OrderHeader.City" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" asp-for="OrderHeader.Address">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Address
+                                </label>
+                                <textarea class="form-control" asp-for="OrderHeader.Address" rows="4" placeholder="Enter your full address (Street, Building, Apartment, etc.)" required></textarea>
+                                <span asp-validation-for="OrderHeader.Address" class="text-danger small"></span>
+                            </div>
+
+                            <hr>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-credit-card"></i>
+                                    Confirm & Pay @CurrencyHelper.FormatCurrency(Model.TotalCarts)
+                                </button>
+                                <a class="btn btn-secondary" asp-action="Index">
+                                    <i class="fas fa-arrow-left me-1"></i>
+                                    Back to Cart
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            <h4>🛒 Your cart is empty</h4>
+            <p>Add some products to your cart before checkout.</p>
+            <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Continue Shopping</a>
+        </div>
+    }
+</div>

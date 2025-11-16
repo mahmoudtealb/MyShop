@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.PageTitle = "Orders Management";
+    ViewBag.CardTitle = "View Orders";
+    Layout = "_LayoutWithSidebar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0 text-primary d-flex align-items-center gap-2">
+        <i class="fas fa-clipboard-list"></i> @ViewBag.CardTitle
+    </h2>
+</div>
+
+<div class="card shadow-sm rounded-4 p-3">
+    <table id="mytable" class="table table-hover align-middle text-center" width="100%">
+        <thead class="table-light">
+            <tr>
+                <th><i class="fas fa-hashtag"></i> Id</th>
+                <th><i class="fas fa-user"></i> Name</th>
+                <th><i class="fas fa-phone"></i> Phone Number</th>
+                <th><i class="fas fa-envelope"></i> Email</th>
+                <th><i class="fas fa-info-circle"></i> Order status</th>
+                <th><i class="fas fa-dollar-sign"></i> Total</th>
+                <th><i class="fas fa-cogs"></i> Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows populated via JS -->
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="/js/order.js"></script>
+}

@@ -1,0 +1,448 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewBag.PageTitle = "Category Management";
+    ViewBag.CardTitle = "View Category";
+    Layout = "_LayoutWithSidebar";
+}
+
+<style>
+    .category-management-container {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .page-header {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        border-left: 5px solid #007bff;
+    }
+    
+    .page-title {
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+        font-size: 2.5rem;
+    }
+    
+    .create-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .create-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    }
+    
+    .category-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table-header th {
+        border: none;
+        padding: 1.5rem 1rem;
+        font-weight: bold;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+    
+    .table-body tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .table-body tr:hover {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table-body td {
+        padding: 1.5rem 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+    
+    .category-name {
+        font-weight: bold;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+    
+    .category-description {
+        color: #6c757d;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .category-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    
+    .btn-edit {
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+    }
+    
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+    }
+    
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        border-left: 4px solid #007bff;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #dee2e6;
+    }
+    
+    .search-section {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+</style>
+
+<div class="category-management-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title mb-2">
+                        <i class="fas fa-th-list me-3"></i>Category Management
+                    </h1>
+                    <p class="text-muted mb-0">Manage your product categories efficiently</p>
+                </div>
+                <a class="create-btn d-flex align-items-center gap-2" asp-area="Admin" asp-controller="Category" asp-action="Create">
+                    <i class="fas fa-plus-circle"></i> Create Category
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">@Model.Count()</div>
+                <div class="stat-label">Total Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">@Model.Count(c => !string.IsNullOrEmpty(c.Discription))</div>
+                <div class="stat-label">With Description</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">@Model.Count(c => c.CreateTime.Date == DateTime.Today)</div>
+                <div class="stat-label">Created Today</div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2 text-primary"></i>Search Categories
+                    </h5>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control search-input" id="searchInput" placeholder="Search by name or description...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Table -->
+        <div class="category-card">
+            @if (Model.Any())
+            {
+                <table class="table table-hover align-middle mb-0" width="100%">
+                    <thead class="table-header">
+                        <tr>
+                            <th>
+                                <i class="fas fa-tag me-2"></i>Category Name
+                            </th>
+                            <th>
+                                <i class="fas fa-align-left me-2"></i>Description
+                            </th>
+                            <th>
+                                <i class="fas fa-calendar-alt me-2"></i>Date Created
+                            </th>
+                            <th>
+                                <i class="fas fa-cogs me-2"></i>Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-body">
+                        @foreach (var item in Model)
+                        {
+                            <tr class="category-row" data-name="@item.Name.ToLower()" data-description="@item.Discription?.ToLower()">
+                                <td>
+                                    <div class="category-name">
+                                        <i class="fas fa-folder me-2 text-warning"></i>@item.Name
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="category-description" title="@item.Discription">
+                                        @Html.Raw(item.Discription ?? "No description")
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="category-date">
+                                        <i class="fas fa-clock me-1"></i>@item.CreateTime.ToString("MMM dd, yyyy 'at' HH:mm")
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a class="btn btn-edit d-inline-flex align-items-center gap-1"
+                                           asp-area="Admin"
+                                           asp-controller="Category"
+                                           asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           title="Edit Category">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a class="btn btn-delete d-inline-flex align-items-center gap-1 delete-category-btn"
+                                           data-category-id="@item.Id"
+                                           data-category-name="@item.Name"
+                                           href="#"
+                                           title="Delete Category">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <h4>No Categories Found</h4>
+                    <p>Start by creating your first category to organize your products.</p>
+                    <a class="create-btn d-inline-flex align-items-center gap-2" asp-area="Admin" asp-controller="Category" asp-action="Create">
+                        <i class="fas fa-plus-circle"></i> Create First Category
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.category-row');
+            
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                const description = row.getAttribute('data-description');
+                
+                if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Delete Category with SweetAlert
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth animations
+            const rows = document.querySelectorAll('.category-row');
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    row.style.transition = 'all 0.5s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Delete button click handlers
+            document.querySelectorAll('.delete-category-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const categoryId = this.getAttribute('data-category-id');
+                    const categoryName = this.getAttribute('data-category-name');
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        html: `<div style="text-align: center;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 60px; color: #dc3545; margin-bottom: 20px;"></i>
+                                <p style="font-size: 18px; margin-bottom: 10px;">You are about to delete:</p>
+                                <p style="font-weight: bold; color: #dc3545; font-size: 20px;">${categoryName}</p>
+                                <p style="color: #6c757d; margin-top: 15px;">This action cannot be undone!</p>
+                               </div>`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: '<i class="fas fa-trash-alt"></i> Yes, delete it!',
+                        cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+                        reverseButtons: true,
+                        customClass: {
+                            popup: 'swal2-popup-custom',
+                            confirmButton: 'swal2-confirm-custom',
+                            cancelButton: 'swal2-cancel-custom'
+                        },
+                        buttonsStyling: true,
+                        allowOutsideClick: false,
+                        allowEscapeKey: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading
+                            Swal.fire({
+                                title: 'Deleting...',
+                                text: 'Please wait while we delete the category',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            // Redirect to delete action
+                            window.location.href = `/Admin/Category/Delete/${categoryId}`;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        .swal2-popup-custom {
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        .swal2-confirm-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .swal2-cancel-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+    </style>
+}

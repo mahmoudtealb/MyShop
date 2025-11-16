@@ -1,0 +1,46 @@
+﻿
+.checkout-steps {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.checkout-steps div {
+    margin: 0 20px;
+    font-weight: bold;
+}
+
+.checkout-steps .active {
+    color: green;
+}
+
+.form-check-input:checked {
+    background-color: green;
+    border-color: green;
+}
+
+.cart-summary {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+    .cart-summary img {
+        width: 60px;
+        border-radius: 8px;
+    }
+
+.shopping-address, .security-section {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    margin-top: 20px;
+}
+
+.btn-custom {
+    border-radius: 50px;
+    padding: 10px 30px;
+}
+
+

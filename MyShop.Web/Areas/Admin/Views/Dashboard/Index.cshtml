@@ -1,0 +1,613 @@
+﻿@using MyShop.Utilities
+@{
+    ViewBag.PageTitle = "AdminArea";
+    ViewBag.CardTitle = "Dashboard";
+}
+
+<!-- روابط الأيقونات -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- تحسينات CSS للـ Dashboard -->
+<style>
+    .small-box .inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .small-box .icon {
+        position: static !important;
+        font-size: 40px;
+        color: rgba(0, 0, 0, 0.2);
+    }
+
+    .small-box .inner h3,
+    .small-box .inner p {
+        margin: 0;
+    }
+
+    /* تحسينات للبطاقات */
+    .card {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    }
+
+    /* تأثيرات الحركة */
+    .card-body {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .card:hover .card-body::before {
+        left: 100%;
+    }
+
+    /* تحسين الأيقونات */
+    .fa-2x {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .fa-2x {
+        transform: scale(1.1);
+    }
+
+    /* تحسين الأزرار */
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* تحسين النصوص */
+    h3 {
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    p {
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    /* تحسين التدرجات */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    /* Dashboard Header Styles */
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .dashboard-title {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.1rem;
+        font-weight: 500;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-stats {
+        position: relative;
+        z-index: 1;
+    }
+
+    .quick-stat {
+        background: rgba(255,255,255,0.2);
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+        text-align: center;
+        min-width: 150px;
+    }
+
+    .stat-label {
+        display: block;
+        color: rgba(255,255,255,0.8);
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        display: block;
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Enhanced Card Animations */
+    .card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.6s;
+        z-index: 1;
+    }
+
+    .card:hover::before {
+        left: 100%;
+    }
+
+    .card-body {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Pulse Animation for Numbers */
+    @@keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .card:hover h3 {
+        animation: pulse 0.6s ease-in-out;
+    }
+
+    /* Enhanced Button Styles */
+    .btn {
+        position: relative;
+        overflow: hidden;
+        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+        }
+        
+        .quick-stat {
+            min-width: 120px;
+            padding: 0.75rem 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Enhanced Card Styles */
+    .enhanced-card {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .enhanced-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+    }
+
+    .enhanced-card:hover::after {
+        transform: translateX(100%);
+    }
+
+    .enhanced-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+    }
+
+    .icon-wrapper {
+        position: relative;
+        padding: 1rem;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .enhanced-card:hover .icon-wrapper {
+        transform: scale(1.1) rotate(5deg);
+        background: rgba(255,255,255,0.3);
+    }
+
+    .counter {
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+    }
+
+    .enhanced-card:hover .counter {
+        transform: scale(1.1);
+        color: #fff;
+    }
+
+    /* Floating Animation */
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .enhanced-card:nth-child(1) { animation: float 6s ease-in-out infinite; }
+    .enhanced-card:nth-child(2) { animation: float 6s ease-in-out infinite 1.5s; }
+    .enhanced-card:nth-child(3) { animation: float 6s ease-in-out infinite 3s; }
+    .enhanced-card:nth-child(4) { animation: float 6s ease-in-out infinite 4.5s; }
+
+    /* Glow Effect */
+    .enhanced-card.bg-info {
+        box-shadow: 0 0 20px rgba(23, 162, 184, 0.3);
+    }
+
+    .enhanced-card.bg-success {
+        box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+    }
+
+    .enhanced-card.bg-warning {
+        box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+    }
+
+    .enhanced-card.bg-primary {
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+    }
+
+    .enhanced-card.bg-danger {
+        box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+    }
+
+    .enhanced-card.bg-secondary {
+        box-shadow: 0 0 20px rgba(108, 117, 125, 0.3);
+    }
+
+    .enhanced-card.bg-dark {
+        box-shadow: 0 0 20px rgba(52, 58, 64, 0.3);
+    }
+
+    /* Button Enhancements */
+    .btn span {
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn i {
+        position: relative;
+        z-index: 2;
+        transition: transform 0.3s ease;
+    }
+
+    .btn:hover i {
+        transform: translateX(3px);
+    }
+
+    /* Currency Styling */
+    .currency-symbol {
+        font-weight: 700;
+        color: #28a745;
+        font-size: 0.9em;
+    }
+
+    .currency-amount {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .total-price, .total-value, .price-amount, .total-amount {
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<!-- Header Section with Enhanced Design -->
+<div class="dashboard-header mb-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="header-content">
+            <h1 class="dashboard-title mb-2">
+                <i class="fas fa-tachometer-alt me-3"></i>
+                لوحة التحكم
+            </h1>
+            <p class="dashboard-subtitle mb-0">
+                <i class="fas fa-calendar-alt me-2"></i>
+                @DateTime.Now.ToString("dddd، dd MMMM yyyy", new System.Globalization.CultureInfo("ar-SA"))
+            </p>
+        </div>
+        <div class="header-stats">
+            <div class="quick-stat">
+                <span class="stat-label">المستخدمين النشطين</span>
+                <span class="stat-value">@ViewBag.Users</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات الطلبات -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-info text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-shopping-basket fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.Orders</h3>
+                        <p class="mb-0">إجمالي الطلبات</p>
+                    </div>
+                </div>
+                <a href="/Admin/Order/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-success text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.ApprovedOrders</h3>
+                        <p class="mb-0">الطلبات المعتمدة</p>
+                    </div>
+                </div>
+                <a href="/Admin/Order/Index?status=Approved" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-warning text-dark enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.PendingOrders</h3>
+                        <p class="mb-0">الطلبات المعلقة</p>
+                    </div>
+                </div>
+                <a href="/Admin/Order/Index?status=Pending" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-primary text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-shipping-fast fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.ShippedOrders</h3>
+                        <p class="mb-0">الطلبات المشحونة</p>
+                    </div>
+                </div>
+                <a href="/Admin/Order/Index?status=Shipped" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات المنتجات والمستخدمين -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-danger text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-boxes fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.Products</h3>
+                        <p class="mb-0">المنتجات</p>
+                    </div>
+                </div>
+                <a href="/Admin/Product/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-secondary text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.Users</h3>
+                        <p class="mb-0">المستخدمين</p>
+                    </div>
+                </div>
+                <a href="/Admin/Users/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-dark text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-list fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.Categories</h3>
+                        <p class="mb-0">التصنيفات</p>
+                    </div>
+                </div>
+                <a href="/Admin/Category/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="card shadow-sm rounded-4 border-0 bg-danger text-white enhanced-card">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-times-circle fa-2x"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0 counter">@ViewBag.CancelledOrders</h3>
+                        <p class="mb-0">الطلبات الملغية</p>
+                    </div>
+                </div>
+                <a href="/Admin/Order/Index?status=Cancelled" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                    <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- إحصائيات مالية -->
+<div class="row g-4">
+    <div class="col-lg-4 col-12">
+        <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <i class="fas fa-chart-line fa-2x"></i>
+                    <div>
+                        <h3 class="mb-0">@CurrencyHelper.FormatCurrency(ViewBag.TotalRevenue)</h3>
+                        <p class="mb-0">إجمالي الإيرادات</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <small>جميع الطلبات</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-12">
+        <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <i class="fas fa-calendar-day fa-2x"></i>
+                    <div>
+                        <h3 class="mb-0">@CurrencyHelper.FormatCurrency(ViewBag.TodayRevenue)</h3>
+                        <p class="mb-0">إيرادات اليوم</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <small>@DateTime.Today.ToString("dd/MM/yyyy")</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-12">
+        <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <i class="fas fa-calendar-alt fa-2x"></i>
+                    <div>
+                        <h3 class="mb-0">@CurrencyHelper.FormatCurrency(ViewBag.MonthlyRevenue)</h3>
+                        <p class="mb-0">إيرادات الشهر</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <small>@DateTime.Now.ToString("MMMM yyyy")</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

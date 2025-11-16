@@ -1,0 +1,273 @@
+﻿@model IPagedList<Product>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using MyShop.Utilities
+@{
+    Layout = "_LayoutWithSidebar";
+}
+
+<style>
+    /* تحسين شكل Pagination - تصميم احترافي ومميز */
+    .pagination {
+        justify-content: center;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .pagination .page-item {
+        margin: 0;
+    }
+    
+    .pagination .page-link {
+        color: #4f8cff;
+        border: 2px solid transparent;
+        border-radius: 12px !important;
+        margin: 0 3px;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        box-shadow: 0 4px 12px rgba(79,140,255,0.12), 0 2px 4px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        min-width: 48px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 15px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .pagination .page-link::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4f8cff 0%, #38d39f 100%);
+        transform: translate(-50%, -50%);
+        transition: width 0.4s, height 0.4s;
+        z-index: 0;
+    }
+    
+    .pagination .page-link:hover {
+        color: #fff;
+        border-color: #4f8cff;
+        box-shadow: 0 8px 24px rgba(79,140,255,0.35), 0 4px 8px rgba(56,211,159,0.25);
+        transform: translateY(-3px) scale(1.05);
+    }
+    
+    .pagination .page-link:hover::before {
+        width: 150%;
+        height: 150%;
+    }
+    
+    .pagination .page-link span,
+    .pagination .page-link {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .pagination .active .page-link, 
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #4f8cff 0%, #38d39f 100%);
+        color: #fff;
+        border: 2px solid transparent;
+        box-shadow: 0 8px 24px rgba(79,140,255,0.45), 0 4px 8px rgba(56,211,159,0.3), inset 0 2px 4px rgba(255,255,255,0.2);
+        transform: scale(1.1);
+        font-weight: 700;
+    }
+    
+    .pagination .active .page-link:hover {
+        transform: translateY(-3px) scale(1.15);
+    }
+    
+    .pagination .page-item.disabled .page-link {
+        background: linear-gradient(145deg, #e9ecef 0%, #dee2e6 100%);
+        color: #adb5bd;
+        opacity: 0.7;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+    
+    .pagination .page-item.disabled .page-link:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .pagination .page-item.disabled .page-link::before {
+        display: none;
+    }
+    
+    /* تأثيرات إضافية للصفحات الأولى والأخيرة */
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        font-weight: 700;
+        min-width: 56px;
+    }
+    
+    /* تحسين الأيقونات داخل Pagination */
+    .pagination .page-link i {
+        font-size: 14px;
+    }
+    /* تحسين الكارد */
+    .card.h-100 {
+        border-radius: 18px;
+        box-shadow: 0 2px 16px rgba(79,140,255,0.08);
+        transition: box-shadow 0.3s, transform 0.3s;
+        border: none;
+    }
+    .card.h-100:hover {
+        box-shadow: 0 8px 32px rgba(56,211,159,0.18), 0 2px 16px rgba(79,140,255,0.18);
+        transform: translateY(-6px) scale(1.03);
+    }
+    .card-img-top {
+        border-radius: 18px 18px 0 0;
+        transition: transform 0.3s;
+    }
+    .card:hover .card-img-top {
+        transform: scale(1.07);
+    }
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2d3a4b;
+    }
+    .card-text.text-muted {
+        font-size: 0.95rem;
+        color: #6c757d;
+    }
+    .card .btn-group .btn {
+        min-width: 80px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 8px;
+        margin-left: 2px;
+        margin-right: 2px;
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary {
+        background: linear-gradient(90deg, #4f8cff 0%, #38d39f 100%);
+        border: none;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #38d39f 0%, #4f8cff 100%);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(56,211,159,0.18);
+    }
+    .btn-success {
+        background: linear-gradient(90deg, #38d39f 0%, #4f8cff 100%);
+        border: none;
+    }
+    .btn-success:hover {
+        background: linear-gradient(90deg, #4f8cff 0%, #38d39f 100%);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(79,140,255,0.18);
+    }
+    .text-success.fw-bold {
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+    .card .btn-group {
+        gap: 0.3rem;
+    }
+</style>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            @if (TempData["info"] != null)
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>@TempData["info"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            <!-- لا تعرض رسالة الخطأ هنا -->
+
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row">
+                    @foreach (var product in Model)
+                    {
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="~/@product.Img" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">@product.Name</h5>
+                                    <p class="card-text text-muted">@product.Category?.Name</p>
+                                    <p class="card-text small">
+                                        @(product.Discription?.Length > 50 ? product.Discription.Substring(0, 50) + "..." : product.Discription)
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-success fw-bold">@CurrencyHelper.FormatCurrency(product.Price)</span>
+                                        <div class="btn-group">
+                                            <a href="@Url.Action("Details", "Home", new { area = "Customer", id = product.Id })" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                            <form asp-action="Details" asp-controller="Home" asp-area="Customer" method="post" style="display:inline;" onsubmit="return showAddToCartToast(event)">
+                                                <input type="hidden" name="ProductId" value="@product.Id" />
+                                                <input type="hidden" name="Count" value="1" />
+                                                <button type="submit" class="btn btn-success btn-sm ms-1">
+                                                    <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No Products Found</h4>
+                    <p class="text-muted">There are no products available at the moment.</p>
+                    <a href="@Url.Action("AddElectronics", "Seed")" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add Some Products
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function showAddToCartToast(e) {
+        // منع الإرسال الفوري
+        e.preventDefault();
+        // إرسال النموذج يدويًا
+        var form = e.target;
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(function (response) {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return;
+            }
+            // عرض رسالة نجاح عصرية
+            showToast('تمت إضافة المنتج للسلة بنجاح!');
+        });
+        return false;
+    }
+    function showToast(message) {
+        let toast = document.createElement('div');
+        toast.className = 'toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 m-4 show';
+        toast.style.zIndex = 9999;
+        toast.innerHTML = `<div class="d-flex"><div class="toast-body">${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 2500);
+    }
+</script>

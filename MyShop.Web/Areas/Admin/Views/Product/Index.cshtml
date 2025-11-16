@@ -1,0 +1,536 @@
+﻿@model IEnumerable<MyShop.Entities.Models.Product>
+@using MyShop.Utilities
+@{
+    ViewBag.PageTitle = "Products Management";
+    ViewBag.CardTitle = "View Products";
+    Layout = "_LayoutWithSidebar";
+}
+
+<style>
+    .product-management-container {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .page-header {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        border-left: 5px solid #28a745;
+    }
+    
+    .page-title {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+        font-size: 2.5rem;
+    }
+    
+    .create-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .create-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table-header th {
+        border: none;
+        padding: 1.5rem 1rem;
+        font-weight: bold;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+    
+    .table-body tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .table-body tr:hover {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table-body td {
+        padding: 1.5rem 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+    
+    .product-name {
+        font-weight: bold;
+        color: #495057;
+        font-size: 1.1rem;
+    }
+    
+    .product-description {
+        color: #6c757d;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .product-price {
+        font-weight: bold;
+        color: #28a745;
+        font-size: 1.1rem;
+    }
+    
+    .product-category {
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    
+    .btn-edit {
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+    }
+    
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+    }
+    
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        border-left: 4px solid #28a745;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #dee2e6;
+    }
+    
+    .search-section {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    
+    .product-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+    }
+    
+    .filters-section {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .filter-select {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+</style>
+
+<div class="product-management-container">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title mb-2">
+                        <i class="fas fa-boxes me-3"></i>Products Management
+                    </h1>
+                    <p class="text-muted mb-0">Manage your product inventory efficiently</p>
+                </div>
+                <a class="create-btn d-flex align-items-center gap-2" asp-area="Admin" asp-controller="Product" asp-action="Create">
+                    <i class="fas fa-plus-circle"></i> Create Product
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-number">@(Model?.Count() ?? 0)</div>
+                <div class="stat-label">Total Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">@(Model?.Count(p => p.Price > 0) ?? 0)</div>
+                <div class="stat-label">With Price</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">@(Model?.Select(p => p.CategoryId).Distinct().Count() ?? 0)</div>
+                <div class="stat-label">Categories Used</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">@(Model?.Any() == true ? CurrencyHelper.FormatCurrency(Model.Average(p => p.Price)) : CurrencyHelper.FormatCurrency(0))</div>
+                <div class="stat-label">Average Price</div>
+            </div>
+        </div>
+
+        <!-- Search and Filters Section -->
+        <div class="search-section">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2 text-success"></i>Search Products
+                    </h5>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control search-input" id="searchInput" placeholder="Search by name or description...">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control filter-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        @if (Model != null)
+                        {
+                            @foreach (var category in Model.Select(p => p.Category).Distinct().Where(c => c != null))
+                            {
+                                <option value="@category.Name">@category.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="product-card">
+            @if (Model?.Any() == true)
+            {
+                <table id="mytable" class="table table-hover align-middle mb-0" width="100%">
+                    <thead class="table-header">
+                        <tr>
+                            <th>
+                                <i class="fas fa-image me-2"></i>Image
+                            </th>
+                            <th>
+                                <i class="fas fa-tag me-2"></i>Product Name
+                            </th>
+                            <th>
+                                <i class="fas fa-align-left me-2"></i>Description
+                            </th>
+                            <th>
+                                <i class="fas fa-dollar-sign me-2"></i>Price
+                            </th>
+                            <th>
+                                <i class="fas fa-list me-2"></i>Category
+                            </th>
+                            <th>
+                                <i class="fas fa-cogs me-2"></i>Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-body">
+                        @if (Model != null)
+                        {
+                            @foreach (var item in Model)
+                            {
+                            <tr class="product-row" data-name="@item.Name.ToLower()" data-description="@item.Discription?.ToLower()" data-category="@item.Category?.Name">
+                                <td>
+                                    <img src="~/@item.Img" class="product-image" alt="@item.Name" onerror="this.src='/img/placeholder.jpg'">
+                                </td>
+                                <td>
+                                    <div class="product-name">
+                                        <i class="fas fa-box me-2 text-primary"></i>@item.Name
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="product-description" title="@item.Discription">
+                                        @Html.Raw(item.Discription ?? "No description")
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="product-price">
+                                        @CurrencyHelper.FormatCurrency(item.Price)
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="product-category">
+                                        <i class="fas fa-tag me-1"></i>@(item.Category?.Name ?? "No Category")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a class="btn btn-edit d-inline-flex align-items-center gap-1"
+                                           asp-area="Admin"
+                                           asp-controller="Product"
+                                           asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           title="Edit Product">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a class="btn btn-delete d-inline-flex align-items-center gap-1 delete-product-btn"
+                                           data-product-id="@item.Id"
+                                           data-product-name="@item.Name"
+                                           href="#"
+                                           title="Delete Product">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h4>No Products Found</h4>
+                    <p>Start by creating your first product to build your inventory.</p>
+                    <a class="create-btn d-inline-flex align-items-center gap-2" asp-area="Admin" asp-controller="Product" asp-action="Create">
+                        <i class="fas fa-plus-circle"></i> Create First Product
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.product-row');
+            
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                const description = row.getAttribute('data-description');
+                
+                if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Category filter functionality
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            const selectedCategory = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.product-row');
+            
+            rows.forEach(row => {
+                const category = row.getAttribute('data-category')?.toLowerCase();
+                
+                if (!selectedCategory || category === selectedCategory) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Delete Product with SweetAlert
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth animations
+            const rows = document.querySelectorAll('.product-row');
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    row.style.transition = 'all 0.5s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Delete button click handlers
+            document.querySelectorAll('.delete-product-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const productId = this.getAttribute('data-product-id');
+                    const productName = this.getAttribute('data-product-name');
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        html: `<div style="text-align: center;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 60px; color: #dc3545; margin-bottom: 20px;"></i>
+                                <p style="font-size: 18px; margin-bottom: 10px;">You are about to delete:</p>
+                                <p style="font-weight: bold; color: #dc3545; font-size: 20px;">${productName}</p>
+                                <p style="color: #6c757d; margin-top: 15px;">This action cannot be undone!</p>
+                               </div>`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: '<i class="fas fa-trash-alt"></i> Yes, delete it!',
+                        cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+                        reverseButtons: true,
+                        customClass: {
+                            popup: 'swal2-popup-custom',
+                            confirmButton: 'swal2-confirm-custom',
+                            cancelButton: 'swal2-cancel-custom'
+                        },
+                        buttonsStyling: true,
+                        allowOutsideClick: false,
+                        allowEscapeKey: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Show loading
+                            Swal.fire({
+                                title: 'Deleting...',
+                                text: 'Please wait while we delete the product',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            // Redirect to delete action
+                            window.location.href = `/Admin/Product/Delete/${productId}`;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        .swal2-popup-custom {
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        .swal2-confirm-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .swal2-cancel-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+    </style>
+}

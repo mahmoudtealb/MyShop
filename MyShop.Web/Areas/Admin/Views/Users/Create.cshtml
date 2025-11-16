@@ -1,0 +1,108 @@
+@using MyShop.Web.Areas.Admin.Controllers
+@model UsersController.CreateUserViewModel
+
+@{
+    ViewBag.PageTitle = "Users Management";
+    ViewBag.CardTitle = "Create New User";
+    Layout = "_LayoutWithSidebar";
+}
+
+<div class="container py-5">
+    <div class="card shadow-lg rounded-4 p-4">
+        <h3 class="text-center text-primary mb-4">
+            <i class="fas fa-user-plus me-2"></i>Create New User
+        </h3>
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label">
+                        <i class="fas fa-user me-1"></i>Full Name
+                    </label>
+                    <input type="text" class="form-control" asp-for="Name" placeholder="Enter full name" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label">
+                        <i class="fas fa-envelope me-1"></i>Email
+                    </label>
+                    <input type="email" class="form-control" asp-for="Email" placeholder="Enter email address" required />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label">
+                        <i class="fas fa-lock me-1"></i>Password
+                    </label>
+                    <input type="password" class="form-control" asp-for="Password" placeholder="Enter password" required />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label">
+                        <i class="fas fa-lock me-1"></i>Confirm Password
+                    </label>
+                    <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Confirm password" required />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="PhoneNumber" class="form-label">
+                        <i class="fas fa-phone me-1"></i>Phone Number
+                    </label>
+                    <input type="tel" class="form-control" asp-for="PhoneNumber" placeholder="Enter phone number" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="City" class="form-label">
+                        <i class="fas fa-city me-1"></i>City
+                    </label>
+                    <input type="text" class="form-control" asp-for="City" placeholder="Enter city" />
+                    <span asp-validation-for="City" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Adress" class="form-label">
+                    <i class="fas fa-map-marker-alt me-1"></i>Address
+                </label>
+                <textarea class="form-control" asp-for="Adress" rows="3" placeholder="Enter address"></textarea>
+                <span asp-validation-for="Adress" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Role" class="form-label">
+                    <i class="fas fa-user-tag me-1"></i>Role
+                </label>
+                <select asp-for="Role" asp-items="@ViewBag.Roles" class="form-select">
+                    <option value="">-- Select Role (Default: Customer) --</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger small"></span>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a class="btn btn-secondary" asp-action="Index">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Create User
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
