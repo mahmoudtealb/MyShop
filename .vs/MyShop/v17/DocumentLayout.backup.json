@@ -1,40 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "G:\\FinalProject\\MyShop\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\account\\manage\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\account\\manage\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\account\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\account\\register.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\account\\externallogin.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\account\\externallogin.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\controllers\\seedcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\controllers\\seedcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|g:\\finalproject\\myshop\\myshop.web\\areas\\identity\\pages\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FB8AB704-EE7D-42F7-A2EF-65B5CAAD35FF}|MyShop.Web\\MyShop.Web.csproj|solutionrelative:myshop.web\\areas\\identity\\pages\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -42,47 +9,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\Manage\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\Manage\\_Layout.cshtml",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\Manage\\_Layout.cshtml",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\Manage\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T17:10:25.224Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Register.cshtml",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T17:09:53.785Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Register.cshtml.cs",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\Register.cshtml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T17:09:36.702Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -96,67 +24,8 @@
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ExternalLogin.cshtml.cs",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\ExternalLogin.cshtml.cs",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\ExternalLogin.cshtml.cs",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\Account\\ExternalLogin.cshtml.cs",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\Account\\ExternalLogin.cshtml.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T17:09:18.684Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "SeedController.cs",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Controllers\\SeedController.cs",
-              "RelativeDocumentMoniker": "MyShop.Web\\Controllers\\SeedController.cs",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Controllers\\SeedController.cs",
-              "RelativeToolTip": "MyShop.Web\\Controllers\\SeedController.cs",
-              "ViewState": "AgIAAKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T01:21:05.576Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_ViewStart.cshtml",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T01:20:59.157Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\_ViewImports.cshtml",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\_ViewImports.cshtml",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T01:20:57.099Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "_ValidationScriptsPartial.cshtml",
-              "DocumentMoniker": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\_ValidationScriptsPartial.cshtml",
-              "RelativeDocumentMoniker": "MyShop.Web\\Areas\\Identity\\Pages\\_ValidationScriptsPartial.cshtml",
-              "ToolTip": "G:\\FinalProject\\MyShop\\MyShop.Web\\Areas\\Identity\\Pages\\_ValidationScriptsPartial.cshtml",
-              "RelativeToolTip": "MyShop.Web\\Areas\\Identity\\Pages\\_ValidationScriptsPartial.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T01:20:53.729Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             }
           ]
         }

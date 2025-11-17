@@ -607,3 +607,4 @@ G:\FinalProject\MyShop\MyShop.Web\obj\Debug\net8.0\MyShop.Web.pdb
 G:\FinalProject\MyShop\MyShop.Web\obj\Debug\net8.0\MyShop.Web.genruntimeconfig.cache
 G:\FinalProject\MyShop\MyShop.Web\obj\Debug\net8.0\ref\MyShop.Web.dll
 G:\FinalProject\MyShop\MyShop.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+G:\FinalProject\MyShop\MyShop.Web\obj\Debug\net8.0\MyShop.Web.sourcelink.json
