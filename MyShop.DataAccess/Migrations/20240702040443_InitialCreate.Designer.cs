@@ -36,7 +36,7 @@ namespace MyShop.Web.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
+                    b.Property<string>(" Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

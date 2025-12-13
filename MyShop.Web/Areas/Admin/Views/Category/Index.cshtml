@@ -236,7 +236,7 @@
                 <div class="stat-label">Total Categories</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">@Model.Count(c => !string.IsNullOrEmpty(c.Discription))</div>
+                <div class="stat-number">@Model.Count(c => !string.IsNullOrEmpty(c.Description))</div>
                 <div class="stat-label">With Description</div>
             </div>
             <div class="stat-card">
@@ -283,15 +283,15 @@
                     <tbody class="table-body">
                         @foreach (var item in Model)
                         {
-                            <tr class="category-row" data-name="@item.Name.ToLower()" data-description="@item.Discription?.ToLower()">
+                            <tr class="category-row" data-name="@item.Name.ToLower()" data-description="@item.Description?.ToLower()">
                                 <td>
                                     <div class="category-name">
                                         <i class="fas fa-folder me-2 text-warning"></i>@item.Name
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="category-description" title="@item.Discription">
-                                        @Html.Raw(item.Discription ?? "No description")
+                                    <div class="category-description" title="@item.Description">
+                                        @Html.Raw(item.Description ?? "No description")
                                     </div>
                                 </td>
                                 <td>

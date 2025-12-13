@@ -6,14 +6,17 @@ using MyShop.DataAccess.Implementation;
 using MyShop.Entities.Models;
 using MyShop.Entities.Repositories;
 using MyShop.Utilities;
+using MyShop.Web.Services;
 using Stripe;
 using System.Globalization;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddHttpContextAccessor();
 
 // Configure Culture for Currency
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -50,6 +53,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Email Sender & Unit of Work
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Database Initializer Service
+builder.Services.AddScoped<DbInitializer>();
 
 // Session Support
 builder.Services.AddDistributedMemoryCache();
@@ -104,5 +110,32 @@ app.MapControllerRoute(
     name: "Root",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
+// Initialize Database (Create Admin User and Roles)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Apply pending migrations first
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var pendingMigrations = context.Database.GetPendingMigrations();
+        if (pendingMigrations.Any())
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Applying {Count} pending migrations...", pendingMigrations.Count());
+            context.Database.Migrate();
+            logger.LogInformation("Migrations applied successfully");
+        }
+
+        var dbInitializer = services.GetRequiredService<DbInitializer>();
+        dbInitializer.InitializeAsync().GetAwaiter().GetResult();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database.");
+    }
+}
 
 app.Run();

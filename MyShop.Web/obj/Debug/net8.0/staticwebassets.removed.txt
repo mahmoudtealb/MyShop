@@ -1,6 +1,1 @@
-G:\FinalProject\MyShop\MyShop.Web\wwwroot\Images\Products\0819effc-ebd1-4b41-a278-cfacf343de2b.jpeg
-G:\FinalProject\MyShop\MyShop.Web\wwwroot\Images\Products\4984c3cf-d01a-4d5f-86fb-51f2ab16d8bd.jpeg
-G:\FinalProject\MyShop\MyShop.Web\wwwroot\Images\Products\57eb6360-d4a2-4c79-9aa3-500f4fdf231b.jpeg
-G:\FinalProject\MyShop\MyShop.Web\wwwroot\Images\Products\88f5c927-abf1-4766-8f33-76efd4f531b8.jpg
-G:\FinalProject\MyShop\MyShop.Web\wwwroot\Images\Products\b7012045-461a-40d5-8c17-41556738c9fa.png
-G:\FinalProject\MyShop\MyShop.Web\wwwroot\Images\Products\fe04fcd9-e9be-45cd-9e09-0d4ca1567fcf.jpg
+F:\Project_MyShop\MyShop.Web\wwwroot\img\AdminLTELogo.png

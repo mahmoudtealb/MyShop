@@ -16,14 +16,14 @@
                     </div>
                     <form id="account" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"><i class="fas fa-envelope me-2 text-secondary"></i> Email</label>
                             <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                            <label asp-for="Input.Email"><i class="fas fa-envelope me-2 text-secondary"></i> Email</label>
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label"><i class="fas fa-lock me-2 text-secondary"></i> Password</label>
                             <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                            <label asp-for="Input.Password"><i class="fas fa-lock me-2 text-secondary"></i> Password</label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
                         <div class="form-check mb-3">
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mt-4 mt-md-0">
+        @* <div class="col-md-6 mt-4 mt-md-0">
             <div class="card shadow-lg rounded-4">
                 <div class="card-body p-5">
                     <h3 class="text-center mb-4">Use another service to log in</h3>
@@ -78,7 +78,7 @@
                     }
                 </div>
             </div>
-        </div>
+        </div> *@
     </div>
 </div>
 

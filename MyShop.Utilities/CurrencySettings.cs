@@ -55,7 +55,7 @@ namespace MyShop.Utilities
         /// <summary>
         /// هل يتم عرض رمز العملة
         /// </summary>
-        public const bool SHOW_SYMBOL = true;
+        public const bool SHOW_SYMBOL = false;
         
         /// <summary>
         /// هل يتم عرض كود العملة

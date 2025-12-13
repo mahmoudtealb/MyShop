@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyShop.Entities.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+
 
 namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -17,14 +21,18 @@ namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IWebHostEnvironment _environment;
 
         public IndexModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+     UserManager<ApplicationUser> userManager,
+     SignInManager<ApplicationUser> signInManager,
+     IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _environment = environment;
         }
+
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -59,6 +67,9 @@ namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Profile Image")]
+            public IFormFile ProfileImage { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -67,6 +78,7 @@ namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Username = userName;
+            ViewData["ProfileImage"] = user.ProfileImage;
 
             Input = new InputModel
             {
@@ -89,6 +101,7 @@ namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
+
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -100,6 +113,62 @@ namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // Handle profile image upload
+            if (Input.ProfileImage != null && Input.ProfileImage.Length > 0)
+            {
+                // Validate file type
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(Input.ProfileImage.FileName).ToLowerInvariant();
+                
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    StatusMessage = "Error: Invalid file type. Please upload an image file (jpg, jpeg, png, gif).";
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                // Validate file size (max 5MB)
+                if (Input.ProfileImage.Length > 5 * 1024 * 1024)
+                {
+                    StatusMessage = "Error: File size too large. Please upload a file smaller than 5MB.";
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "Images", "profiles");
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Delete old image if exists
+                if (!string.IsNullOrEmpty(user.ProfileImage))
+                {
+                    var oldImagePath = Path.Combine(_environment.WebRootPath, user.ProfileImage.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        try
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log but don't fail
+                        }
+                    }
+                }
+
+                var fileName = Guid.NewGuid().ToString() + fileExtension;
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await Input.ProfileImage.CopyToAsync(stream);
+
+                user.ProfileImage = "/Images/profiles/" + fileName;
+            }
+
+
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -110,9 +179,50 @@ namespace MyShop.Web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteProfileImageAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (!string.IsNullOrEmpty(user.ProfileImage))
+            {
+                var imagePath = Path.Combine(_environment.WebRootPath, user.ProfileImage.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                
+                if (System.IO.File.Exists(imagePath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(imagePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log but continue
+                    }
+                }
+
+                user.ProfileImage = null;
+                var updateResult = await _userManager.UpdateAsync(user);
+                
+                if (updateResult.Succeeded)
+                {
+                    await _signInManager.RefreshSignInAsync(user);
+                    StatusMessage = "Profile image has been deleted";
+                }
+                else
+                {
+                    StatusMessage = "Error: Failed to delete profile image.";
+                }
+            }
+
             return RedirectToPage();
         }
     }

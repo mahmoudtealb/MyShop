@@ -21,9 +21,9 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="Discription" class="form-label d-flex align-items-center gap-1"><i class="fas fa-align-left"></i> الوصف</label>
-                    <textarea asp-for="Discription" class="form-control"></textarea>
-                    <span asp-validation-for="Discription" class="text-danger"></span>
+                    <label asp-for="Description" class="form-label d-flex align-items-center gap-1"><i class="fas fa-align-left"></i> الوصف</label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="mb-3 d-flex gap-2 justify-content-end">
                     <button type="submit" class="btn btn-success d-flex align-items-center gap-1"><i class="fas fa-save"></i> Update</button>
@@ -39,7 +39,7 @@
 
     <script>
         tinymce.init({
-            selector: 'textarea[name="Discription"]',
+            selector: 'textarea[name="Description"]',
             plugins: 'lists link image preview',
             toolbar: 'undo redo | bold italic underline | bullist numlist | link image | preview',
             height: 300,

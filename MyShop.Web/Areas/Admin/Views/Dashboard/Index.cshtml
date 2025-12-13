@@ -2,6 +2,11 @@
 @{
     ViewBag.PageTitle = "AdminArea";
     ViewBag.CardTitle = "Dashboard";
+    
+    // تحويل القيم المالية إلى decimal بشكل صريح
+    decimal totalRevenue = ViewBag.TotalRevenue != null ? Convert.ToDecimal(ViewBag.TotalRevenue) : 0m;
+    decimal todayRevenue = ViewBag.TodayRevenue != null ? Convert.ToDecimal(ViewBag.TodayRevenue) : 0m;
+    decimal monthlyRevenue = ViewBag.MonthlyRevenue != null ? Convert.ToDecimal(ViewBag.MonthlyRevenue) : 0m;
 }
 
 <!-- روابط الأيقونات -->
@@ -10,6 +15,25 @@
 
 <!-- تحسينات CSS للـ Dashboard -->
 <style>
+    /* Reset and Base Styles */
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 50%, #c3cfe2 100%);
+        min-height: 100vh;
+        background-attachment: fixed;
+    }
+
+    .content-wrapper {
+        background: transparent !important;
+    }
+
+    .content {
+        padding: 2rem !important;
+    }
+
     .small-box .inner {
         display: flex;
         justify-content: space-between;
@@ -29,13 +53,32 @@
 
     /* تحسينات للبطاقات */
     .card {
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         border: none;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .card:hover::after {
+        opacity: 1;
     }
 
     .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
     }
 
     /* تأثيرات الحركة */
@@ -109,39 +152,71 @@
     /* Dashboard Header Styles */
     .dashboard-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 3rem 2.5rem;
+        border-radius: 25px;
+        box-shadow: 0 15px 50px rgba(102, 126, 234, 0.5);
         position: relative;
         overflow: hidden;
+        margin-bottom: 2.5rem;
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .dashboard-header::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        opacity: 0.3;
+        top: -50%;
+        right: -20%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 5s ease-in-out infinite 1s;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.8; }
     }
 
     .dashboard-title {
         color: white;
-        font-size: 2.5rem;
-        font-weight: 800;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        font-size: 3rem;
+        font-weight: 900;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.3);
         position: relative;
         z-index: 1;
+        letter-spacing: -0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-title i {
+        animation: rotate 3s linear infinite;
+    }
+
+    @@keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
     }
 
     .dashboard-subtitle {
-        color: rgba(255,255,255,0.9);
-        font-size: 1.1rem;
+        color: rgba(255,255,255,0.95);
+        font-size: 1.2rem;
         font-weight: 500;
         position: relative;
         z-index: 1;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     .header-stats {
@@ -150,13 +225,21 @@
     }
 
     .quick-stat {
-        background: rgba(255,255,255,0.2);
-        padding: 1rem 1.5rem;
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.25);
+        padding: 1.5rem 2rem;
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255,255,255,0.4);
         text-align: center;
-        min-width: 150px;
+        min-width: 180px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+
+    .quick-stat:hover {
+        transform: translateY(-5px) scale(1.05);
+        background: rgba(255,255,255,0.35);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.25);
     }
 
     .stat-label {
@@ -170,9 +253,22 @@
     .stat-value {
         display: block;
         color: white;
-        font-size: 2rem;
-        font-weight: 700;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 3px 8px rgba(0,0,0,0.4);
+        line-height: 1.2;
+        animation: countUp 1s ease-out;
+    }
+
+    @@keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* Enhanced Card Animations */
@@ -203,12 +299,6 @@
     }
 
     /* Pulse Animation for Numbers */
-    @@keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-
     .card:hover h3 {
         animation: pulse 0.6s ease-in-out;
     }
@@ -238,21 +328,108 @@
         left: 100%;
     }
 
+    /* Enhanced Card Body */
+    .card-body {
+        padding: 2rem !important;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .enhanced-card p {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        opacity: 0.95;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* Revenue Cards Enhancement */
+    .revenue-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        padding: 2rem;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .revenue-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .revenue-card:hover::before {
+        animation: float 3s ease-in-out infinite;
+    }
+
     /* Responsive Design */
     @@media (max-width: 768px) {
         .dashboard-header {
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
         }
         
         .dashboard-title {
             font-size: 2rem;
         }
+
+        .dashboard-title i {
+            font-size: 1.5rem;
+        }
         
+        .quick-stat {
+            min-width: 140px;
+            padding: 1rem 1.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+        }
+
+        .card-body {
+            padding: 1.5rem !important;
+            min-height: 150px;
+        }
+
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            padding: 1rem;
+        }
+
+        .counter {
+            font-size: 2rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .dashboard-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+        }
+
+        .dashboard-subtitle {
+            font-size: 0.9rem;
+        }
+
         .quick-stat {
             min-width: 120px;
             padding: 0.75rem 1rem;
         }
-        
+
         .stat-value {
             font-size: 1.5rem;
         }
@@ -263,6 +440,7 @@
         position: relative;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .enhanced-card::after {
@@ -288,27 +466,46 @@
 
     .icon-wrapper {
         position: relative;
-        padding: 1rem;
+        padding: 1.2rem;
         border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.25);
+        backdrop-filter: blur(15px);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .enhanced-card:hover .icon-wrapper {
-        transform: scale(1.1) rotate(5deg);
-        background: rgba(255,255,255,0.3);
+        transform: scale(1.15) rotate(10deg);
+        background: rgba(255,255,255,0.4);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
 
-    .counter {
-        font-weight: 800;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    .icon-wrapper i {
+        font-size: 2rem;
         transition: all 0.3s ease;
     }
 
+    .enhanced-card:hover .icon-wrapper i {
+        transform: scale(1.2);
+    }
+
+    .counter {
+        font-weight: 900;
+        text-shadow: 0 3px 8px rgba(0,0,0,0.4);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
     .enhanced-card:hover .counter {
-        transform: scale(1.1);
+        transform: scale(1.15);
         color: #fff;
+        text-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
 
     /* Floating Animation */
@@ -322,36 +519,50 @@
     .enhanced-card:nth-child(3) { animation: float 6s ease-in-out infinite 3s; }
     .enhanced-card:nth-child(4) { animation: float 6s ease-in-out infinite 4.5s; }
 
-    /* Glow Effect */
-    .enhanced-card.bg-info {
-        box-shadow: 0 0 20px rgba(23, 162, 184, 0.3);
+    /* Enhanced Card Glow Effects */
+    .enhanced-card:hover {
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
     }
 
-    .enhanced-card.bg-success {
-        box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+    /* Card specific hover effects */
+    .enhanced-card[style*="667eea"]:hover {
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.5) !important;
     }
 
-    .enhanced-card.bg-warning {
-        box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+    .enhanced-card[style*="11998e"]:hover {
+        box-shadow: 0 20px 60px rgba(17, 153, 142, 0.5) !important;
     }
 
-    .enhanced-card.bg-primary {
-        box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+    .enhanced-card[style*="f093fb"]:hover {
+        box-shadow: 0 20px 60px rgba(240, 147, 251, 0.5) !important;
     }
 
-    .enhanced-card.bg-danger {
-        box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+    .enhanced-card[style*="4facfe"]:hover {
+        box-shadow: 0 20px 60px rgba(79, 172, 254, 0.5) !important;
     }
 
-    .enhanced-card.bg-secondary {
-        box-shadow: 0 0 20px rgba(108, 117, 125, 0.3);
+    .enhanced-card[style*="fa709a"]:hover {
+        box-shadow: 0 20px 60px rgba(250, 112, 154, 0.5) !important;
     }
 
-    .enhanced-card.bg-dark {
-        box-shadow: 0 0 20px rgba(52, 58, 64, 0.3);
+    .enhanced-card[style*="30cfd0"]:hover {
+        box-shadow: 0 20px 60px rgba(48, 207, 208, 0.5) !important;
+    }
+
+    .enhanced-card[style*="ff6b6b"]:hover {
+        box-shadow: 0 20px 60px rgba(255, 107, 107, 0.5) !important;
     }
 
     /* Button Enhancements */
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.5rem 1.2rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
     .btn span {
         position: relative;
         z-index: 2;
@@ -363,8 +574,24 @@
         transition: transform 0.3s ease;
     }
 
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
     .btn:hover i {
-        transform: translateX(3px);
+        transform: translateX(5px);
+    }
+
+    .btn-light {
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        border: none;
+    }
+
+    .btn-light:hover {
+        background: white;
+        color: #000;
     }
 
     /* Currency Styling */
@@ -411,72 +638,72 @@
 <!-- إحصائيات الطلبات -->
 <div class="row g-4 mb-4">
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-info text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-shopping-basket fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.Orders</h3>
-                        <p class="mb-0">إجمالي الطلبات</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">إجمالي الطلبات</p>
                     </div>
                 </div>
-                <a href="/Admin/Order/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Order/Index" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-success text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-check-circle fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.ApprovedOrders</h3>
-                        <p class="mb-0">الطلبات المعتمدة</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">الطلبات المعتمدة</p>
                     </div>
                 </div>
-                <a href="/Admin/Order/Index?status=Approved" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Order/Index?status=Approved" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-warning text-dark enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-clock fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.PendingOrders</h3>
-                        <p class="mb-0">الطلبات المعلقة</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">الطلبات المعلقة</p>
                     </div>
                 </div>
-                <a href="/Admin/Order/Index?status=Pending" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Order/Index?status=Pending" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-primary text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-shipping-fast fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.ShippedOrders</h3>
-                        <p class="mb-0">الطلبات المشحونة</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">الطلبات المشحونة</p>
                     </div>
                 </div>
-                <a href="/Admin/Order/Index?status=Shipped" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Order/Index?status=Shipped" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -487,72 +714,72 @@
 <!-- إحصائيات المنتجات والمستخدمين -->
 <div class="row g-4 mb-4">
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-danger text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-boxes fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.Products</h3>
-                        <p class="mb-0">المنتجات</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">المنتجات</p>
                     </div>
                 </div>
-                <a href="/Admin/Product/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Product/Index" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-secondary text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-users fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.Users</h3>
-                        <p class="mb-0">المستخدمين</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">المستخدمين</p>
                     </div>
                 </div>
-                <a href="/Admin/Users/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Users/Index" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-dark text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <div class="icon-wrapper">
-                        <i class="fas fa-list fa-2x"></i>
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
+                    <div class="icon-wrapper" style="background: rgba(0,0,0,0.1);">
+                        <i class="fas fa-list fa-2x" style="color: #333;"></i>
                     </div>
-                    <div>
-                        <h3 class="mb-0 counter">@ViewBag.Categories</h3>
-                        <p class="mb-0">التصنيفات</p>
+                    <div class="flex-grow-1">
+                        <h3 class="mb-0 counter" style="color: #333;">@ViewBag.Categories</h3>
+                        <p class="mb-0" style="font-size: 0.95rem; color: #555;">التصنيفات</p>
                     </div>
                 </div>
-                <a href="/Admin/Category/Index" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Category/Index" class="btn btn-dark btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
-        <div class="card shadow-sm rounded-4 border-0 bg-danger text-white enhanced-card">
+        <div class="card shadow-lg rounded-4 border-0 enhanced-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white;">
             <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="d-flex align-items-center gap-3 mb-2 w-100">
                     <div class="icon-wrapper">
                         <i class="fas fa-times-circle fa-2x"></i>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <h3 class="mb-0 counter">@ViewBag.CancelledOrders</h3>
-                        <p class="mb-0">الطلبات الملغية</p>
+                        <p class="mb-0" style="font-size: 0.95rem;">الطلبات الملغية</p>
                     </div>
                 </div>
-                <a href="/Admin/Order/Index?status=Cancelled" class="btn btn-light btn-sm mt-2 d-flex align-items-center gap-1">
+                <a href="/Admin/Order/Index?status=Cancelled" class="btn btn-light btn-sm mt-2 w-100 d-flex align-items-center justify-content-center gap-1">
                     <span>المزيد</span> <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -561,52 +788,40 @@
 </div>
 
 <!-- إحصائيات مالية -->
-<div class="row g-4">
+<div class="row g-4 mt-4">
     <div class="col-lg-4 col-12">
-        <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-            <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <i class="fas fa-chart-line fa-2x"></i>
-                    <div>
-                        <h3 class="mb-0">@CurrencyHelper.FormatCurrency(ViewBag.TotalRevenue)</h3>
-                        <p class="mb-0">إجمالي الإيرادات</p>
-                    </div>
+        <div class="card shadow-lg rounded-4 border-0 revenue-card enhanced-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                <div class="icon-wrapper mb-3" style="background: rgba(255,255,255,0.3);">
+                    <i class="fas fa-chart-line fa-3x"></i>
                 </div>
-                <div class="text-center">
-                    <small>جميع الطلبات</small>
-                </div>
+                <h2 class="mb-2 counter" style="font-size: 2.5rem; font-weight: 900;">@CurrencyHelper.FormatCurrency(totalRevenue)</h2>
+                <p class="mb-3" style="font-size: 1.1rem; font-weight: 600; opacity: 0.95;">إجمالي الإيرادات</p>
+                <small style="opacity: 0.8; font-size: 0.9rem;">جميع الطلبات</small>
             </div>
         </div>
     </div>
     <div class="col-lg-4 col-12">
-        <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-            <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <i class="fas fa-calendar-day fa-2x"></i>
-                    <div>
-                        <h3 class="mb-0">@CurrencyHelper.FormatCurrency(ViewBag.TodayRevenue)</h3>
-                        <p class="mb-0">إيرادات اليوم</p>
-                    </div>
+        <div class="card shadow-lg rounded-4 border-0 revenue-card enhanced-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                <div class="icon-wrapper mb-3" style="background: rgba(255,255,255,0.3);">
+                    <i class="fas fa-calendar-day fa-3x"></i>
                 </div>
-                <div class="text-center">
-                    <small>@DateTime.Today.ToString("dd/MM/yyyy")</small>
-                </div>
+                <h2 class="mb-2 counter" style="font-size: 2.5rem; font-weight: 900;">@CurrencyHelper.FormatCurrency(todayRevenue)</h2>
+                <p class="mb-3" style="font-size: 1.1rem; font-weight: 600; opacity: 0.95;">إيرادات اليوم</p>
+                <small style="opacity: 0.8; font-size: 0.9rem;">@DateTime.Today.ToString("dd/MM/yyyy")</small>
             </div>
         </div>
     </div>
     <div class="col-lg-4 col-12">
-        <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
-            <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                    <i class="fas fa-calendar-alt fa-2x"></i>
-                    <div>
-                        <h3 class="mb-0">@CurrencyHelper.FormatCurrency(ViewBag.MonthlyRevenue)</h3>
-                        <p class="mb-0">إيرادات الشهر</p>
-                    </div>
+        <div class="card shadow-lg rounded-4 border-0 revenue-card enhanced-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                <div class="icon-wrapper mb-3" style="background: rgba(255,255,255,0.3);">
+                    <i class="fas fa-calendar-alt fa-3x"></i>
                 </div>
-                <div class="text-center">
-                    <small>@DateTime.Now.ToString("MMMM yyyy")</small>
-                </div>
+                <h2 class="mb-2 counter" style="font-size: 2.5rem; font-weight: 900;">@CurrencyHelper.FormatCurrency(monthlyRevenue)</h2>
+                <p class="mb-3" style="font-size: 1.1rem; font-weight: 600; opacity: 0.95;">إيرادات الشهر</p>
+                <small style="opacity: 0.8; font-size: 0.9rem;">@DateTime.Now.ToString("MMMM yyyy")</small>
             </div>
         </div>
     </div>

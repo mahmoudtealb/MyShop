@@ -16,8 +16,11 @@ namespace MyShop.Entities.Models
         [Required]
         public string Name { get; set; } = string.Empty;
         
+       
+
         [DisplayName("Description")]
-        public string Discription { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+
 
         [DisplayName("Image")]
         [ValidateNever]

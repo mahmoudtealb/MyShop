@@ -38,9 +38,13 @@ namespace MyShop.Web.Areas.Admin.Controllers
                 
                 // إحصائيات مالية
                 var allOrders = _unitOfWork.OrderHeader.GetAll();
-                ViewBag.TotalRevenue = allOrders.Sum(x => x.TotalPrice);
-                ViewBag.TodayRevenue = allOrders.Where(x => x.OrderDate.Date == DateTime.Today).Sum(x => x.TotalPrice);
-                ViewBag.MonthlyRevenue = allOrders.Where(x => x.OrderDate.Month == DateTime.Now.Month && x.OrderDate.Year == DateTime.Now.Year).Sum(x => x.TotalPrice);
+                ViewBag.TotalRevenue = allOrders.Any() ? allOrders.Sum(x => x.TotalPrice) : 0m;
+                ViewBag.TodayRevenue = allOrders.Any(x => x.OrderDate.Date == DateTime.Today) 
+                    ? allOrders.Where(x => x.OrderDate.Date == DateTime.Today).Sum(x => x.TotalPrice) 
+                    : 0m;
+                ViewBag.MonthlyRevenue = allOrders.Any(x => x.OrderDate.Month == DateTime.Now.Month && x.OrderDate.Year == DateTime.Now.Year)
+                    ? allOrders.Where(x => x.OrderDate.Month == DateTime.Now.Month && x.OrderDate.Year == DateTime.Now.Year).Sum(x => x.TotalPrice)
+                    : 0m;
 
                 _logger.LogInformation($"Dashboard loaded - Orders: {ViewBag.Orders}, Approved: {ViewBag.ApprovedOrders}, Users: {ViewBag.Users}, Products: {ViewBag.Products}");
                 
@@ -58,6 +62,12 @@ namespace MyShop.Web.Areas.Admin.Controllers
                 ViewBag.Products = 0;
                 ViewBag.Categories = 0;
                 ViewBag.PendingOrders = 0;
+                ViewBag.ProcessingOrders = 0;
+                ViewBag.ShippedOrders = 0;
+                ViewBag.CancelledOrders = 0;
+                ViewBag.TotalRevenue = 0m;
+                ViewBag.TodayRevenue = 0m;
+                ViewBag.MonthlyRevenue = 0m;
                 
                 return View();
             }

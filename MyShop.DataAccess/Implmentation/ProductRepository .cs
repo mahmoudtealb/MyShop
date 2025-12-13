@@ -26,7 +26,7 @@ namespace MyShop.DataAccess.Implementation
             if (ProductInDb != null)
             {
                 ProductInDb.Name = Product.Name;
-                ProductInDb.Discription = Product.Discription;  // الاحتفاظ بالخطأ الإملائي هنا حسب رغبتك
+                ProductInDb.Description = Product.Description;  // الاحتفاظ بالخطأ الإملائي هنا حسب رغبتك
                 ProductInDb.Price = Product.Price;  
                ProductInDb.Img = Product.Img;
                 ProductInDb.Category = Product.Category;

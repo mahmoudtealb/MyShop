@@ -254,9 +254,9 @@
                             </td>
                                 <td class="product-info-cell">
                                     <div class="product-name">@(item.Product?.Name ?? "منتج غير موجود")</div>
-                                    @if (item.Product != null && !string.IsNullOrEmpty(item.Product.Discription))
+                                    @if (item.Product != null && !string.IsNullOrEmpty(item.Product.Description))
                                     {
-                                        <div class="product-description">@item.Product.Discription</div>
+                                        <div class="product-description">@item.Product.Description</div>
                                 }
                             </td>
                                 <td class="quantity-cell">

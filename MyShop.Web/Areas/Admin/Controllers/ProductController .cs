@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MyShop.DataAccess.Implementation;
 using MyShop.Entities.Models;
 using MyShop.Entities.Repositories;
 using MyShop.Entities.ViewModels;
+using MyShop.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,6 +16,7 @@ using System.Linq;
 namespace MyShop.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -66,10 +69,20 @@ namespace MyShop.Web.Areas.Admin.Controllers
         {
             try
             {
+                var categories = _unitOfWork.Category.GetAll();
+                
+                // Check if there are any categories
+                if (categories == null || !categories.Any())
+                {
+                    _logger.LogWarning("No categories found. User should create a category first.");
+                    TempData["warning"] = "No categories found. Please create a category first before adding products.";
+                    return RedirectToAction("Index", "Category");
+                }
+
                 ProductVM productVM = new ProductVM
                 {
                     Product = new Product(),
-                    CategoryList = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
+                    CategoryList = categories.Select(x => new SelectListItem
                     {
                         Text = x.Name,
                         Value = x.Id.ToString()
@@ -80,8 +93,8 @@ namespace MyShop.Web.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error loading create product page");
-                TempData["error"] = "Error loading create page. Please try again later.";
+                _logger.LogError(ex, $"Error loading create product page. Exception: {ex.Message}");
+                TempData["error"] = $"Error loading create page: {ex.Message}";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -89,74 +102,119 @@ namespace MyShop.Web.Areas.Admin.Controllers
         // CREATE (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductVM productVM, IFormFile file)
+        public IActionResult Create(ProductVM productVM, IFormFile? file)
         {
             try
             {
-                if (ModelState.IsValid)
+                // Log ModelState errors for debugging
+                if (!ModelState.IsValid)
                 {
-                    string rootPath = _webHostEnvironment.WebRootPath;
-
-                    if (file != null && file.Length > 0)
-                    {
-                        // Validate file type
-                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-                        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-                        
-                        if (!allowedExtensions.Contains(fileExtension))
-                        {
-                            TempData["error"] = "Invalid file type. Please upload an image file.";
-                            return RedirectToAction(nameof(Create));
-                        }
-
-                        // Validate file size (max 5MB)
-                        if (file.Length > 5 * 1024 * 1024)
-                        {
-                            TempData["error"] = "File size too large. Please upload a file smaller than 5MB.";
-                            return RedirectToAction(nameof(Create));
-                        }
-
-                        string fileName = Guid.NewGuid().ToString();
-                        var upload = Path.Combine(rootPath, @"Images\Products");
-                        var ext = Path.GetExtension(file.FileName);
-
-                        // Ensure directory exists
-                        if (!Directory.Exists(upload))
-                        {
-                            Directory.CreateDirectory(upload);
-                        }
-
-                        using (var fileStream = new FileStream(Path.Combine(upload, fileName + ext), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-
-                        productVM.Product.Img = @"Images\Products\" + fileName + ext;
-                    }
-
-                    _unitOfWork.Product.Add(productVM.Product);
-                    _unitOfWork.Complete();
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    _logger.LogWarning($"ModelState is invalid. Errors: {string.Join(", ", errors)}");
                     
-                    _logger.LogInformation($"Product '{productVM.Product.Name}' created successfully");
-                    TempData["success"] = "Product created successfully.";
-                    return RedirectToAction(nameof(Index));
+                    // Repopulate category list
+                    productVM.CategoryList = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
+                    {
+                        Text = x.Name,
+                        Value = x.Id.ToString()
+                    });
+                    
+                    TempData["error"] = $"Please check the form: {string.Join(", ", errors)}";
+                    return View(productVM);
                 }
 
-                // If model is not valid, repopulate category list
+                string rootPath = _webHostEnvironment.WebRootPath;
+
+                // Handle image upload (optional)
+                if (file != null && file.Length > 0)
+                {
+                    // Validate file type
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                    var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                    
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        productVM.CategoryList = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
+                        {
+                            Text = x.Name,
+                            Value = x.Id.ToString()
+                        });
+                        TempData["error"] = "Invalid file type. Please upload an image file (jpg, jpeg, png, gif, webp).";
+                        return View(productVM);
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (file.Length > 5 * 1024 * 1024)
+                    {
+                        productVM.CategoryList = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
+                        {
+                            Text = x.Name,
+                            Value = x.Id.ToString()
+                        });
+                        TempData["error"] = "File size too large. Please upload a file smaller than 5MB.";
+                        return View(productVM);
+                    }
+
+                    string fileName = Guid.NewGuid().ToString();
+                    var upload = Path.Combine(rootPath, @"Images\Products");
+                    var ext = Path.GetExtension(file.FileName);
+
+                    // Ensure directory exists
+                    if (!Directory.Exists(upload))
+                    {
+                        Directory.CreateDirectory(upload);
+                        _logger.LogInformation($"Created directory: {upload}");
+                    }
+
+                    var filePath = Path.Combine(upload, fileName + ext);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    productVM.Product.Img = @"Images\Products\" + fileName + ext;
+                    _logger.LogInformation($"Image saved to: {productVM.Product.Img}");
+                }
+                else
+                {
+                    // Image is optional, leave it empty if not provided
+                    productVM.Product.Img = string.Empty;
+                    _logger.LogInformation("No image uploaded, product will be created without image");
+                }
+
+                // Validate CategoryId exists
+                var categoryExists = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == productVM.Product.CategoryId);
+                if (categoryExists == null)
+                {
+                    productVM.CategoryList = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
+                    {
+                        Text = x.Name,
+                        Value = x.Id.ToString()
+                    });
+                    TempData["error"] = "Selected category does not exist. Please select a valid category.";
+                    return View(productVM);
+                }
+
+                _unitOfWork.Product.Add(productVM.Product);
+                _unitOfWork.Complete();
+                
+                _logger.LogInformation($"Product '{productVM.Product.Name}' created successfully with ID: {productVM.Product.Id}");
+                TempData["success"] = $"Product '{productVM.Product.Name}' created successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error creating product. Exception: {ex.Message}, StackTrace: {ex.StackTrace}");
+                
+                // Repopulate category list on error
                 productVM.CategoryList = _unitOfWork.Category.GetAll().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString()
                 });
-
-                TempData["error"] = "Please check the form and try again.";
+                
+                TempData["error"] = $"Error creating product: {ex.Message}";
                 return View(productVM);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating product");
-                TempData["error"] = "Error creating product. Please try again later.";
-                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -263,7 +321,7 @@ namespace MyShop.Web.Areas.Admin.Controllers
 
                     // Update other properties
                     productFromDb.Name = productVM.Product.Name;
-                    productFromDb.Discription = productVM.Product.Discription;
+                    productFromDb.Description = productVM.Product.Description;
                     productFromDb.Price = productVM.Product.Price;
                     productFromDb.CategoryId = productVM.Product.CategoryId;
 
@@ -429,6 +487,53 @@ namespace MyShop.Web.Areas.Admin.Controllers
             {
                 _logger.LogError(ex, $"Error deleting product with ID: {id}");
                 return Json(new { success = false, message = "Error while deleting product." });
+            }
+        }
+
+        // DELETE ALL PRODUCTS
+        [HttpPost]
+        public IActionResult DeleteAll()
+        {
+            try
+            {
+                var allProducts = _unitOfWork.Product.GetAll().ToList();
+                int deletedCount = 0;
+
+                foreach (var product in allProducts)
+                {
+                    // Delete image file if exists
+                    if (!string.IsNullOrEmpty(product.Img))
+                    {
+                        try
+                        {
+                            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.Img.TrimStart('~', '/').Replace('/', Path.DirectorySeparatorChar));
+                            if (System.IO.File.Exists(imagePath))
+                            {
+                                System.IO.File.Delete(imagePath);
+                                _logger.LogInformation($"Deleted image file: {imagePath}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning(ex, $"Could not delete image file for product {product.Id}");
+                        }
+                    }
+
+                    _unitOfWork.Product.Remove(product);
+                    deletedCount++;
+                }
+
+                _unitOfWork.Complete();
+
+                _logger.LogInformation($"Successfully deleted {deletedCount} products");
+                TempData["success"] = $"Successfully deleted {deletedCount} products.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting all products");
+                TempData["error"] = "Error while deleting all products. Please try again.";
+                return RedirectToAction(nameof(Index));
             }
         }
     }

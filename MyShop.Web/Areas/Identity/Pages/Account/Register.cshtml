@@ -8,41 +8,41 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-lg rounded-4">
-                <div class="card-body p-5">
+                <div class="card-body p-5"> 
                     <div class="d-flex justify-content-center align-items-center gap-2 mb-4">
                         <i class="fas fa-user-plus fa-2x text-primary"></i>
                         <h2 class="mb-0">@ViewData["Title"]</h2>
                     </div>
                     <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.Name" class="form-label"><i class="fas fa-user me-2 text-secondary"></i> Name</label>
                             <input asp-for="Input.Name" class="form-control" autocomplete="name" aria-required="true" placeholder="Your Name" />
-                            <label asp-for="Input.Name"><i class="fas fa-user me-2 text-secondary"></i> Name</label>
                             <span asp-validation-for="Input.Name" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.Adress" class="form-label"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> Address</label>
                             <input asp-for="Input.Adress" class="form-control" autocomplete="address-line1" aria-required="true" placeholder="Your Address" />
-                            <label asp-for="Input.Adress"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> Address</label>
                             <span asp-validation-for="Input.Adress" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.City" class="form-label"><i class="fas fa-city me-2 text-secondary"></i> City</label>
                             <input asp-for="Input.City" class="form-control" autocomplete="address-level2" aria-required="true" placeholder="City" />
-                            <label asp-for="Input.City"><i class="fas fa-city me-2 text-secondary"></i> City</label>
                             <span asp-validation-for="Input.City" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label"><i class="fas fa-envelope me-2 text-secondary"></i> Email</label>
                             <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
-                            <label asp-for="Input.Email"><i class="fas fa-envelope me-2 text-secondary"></i> Email</label>
                             <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label"><i class="fas fa-lock me-2 text-secondary"></i> Password</label>
                             <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
-                            <label asp-for="Input.Password"><i class="fas fa-lock me-2 text-secondary"></i> Password</label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
-                        <div class="form-floating mb-4">
+                        <div class="mb-4">
+                            <label asp-for="Input.ConfirmPassword" class="form-label"><i class="fas fa-lock me-2 text-secondary"></i> Confirm Password</label>
                             <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
-                            <label asp-for="Input.ConfirmPassword"><i class="fas fa-lock me-2 text-secondary"></i> Confirm Password</label>
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
                         <div class="d-grid">
@@ -55,9 +55,9 @@
             </div>
         </div>
 
-        <div class="col-md-6 mt-4 mt-md-0">
+       @*  <div class="col-md-6 mt-4 mt-md-0">
             <div class="card shadow-lg rounded-4">
-                <div class="card-body p-5">
+               <div class="card-body p-5"> 
                     <h3 class="text-center mb-4">Use another service to register</h3>
 
                     @if ((Model.ExternalLogins?.Count ?? 0) == 0)
@@ -80,7 +80,7 @@
                     }
                 </div>
             </div>
-        </div>
+        </div> *@
     </div>
 </div>
 

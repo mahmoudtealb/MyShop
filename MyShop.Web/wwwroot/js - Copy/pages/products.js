@@ -13,7 +13,7 @@ function loaddata() {
         },
         columns: [
             { data: "name" },
-            { data: "discription" }, // حافظنا على الاسم زي ما طلبت
+            { data: "Description" }, // حافظنا على الاسم زي ما طلبت
             { data: "price" },
             { data: "category.name" },
             {

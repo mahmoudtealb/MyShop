@@ -11,5 +11,7 @@ namespace MyShop.Entities.Models
         public string Adress { get; set; } = string.Empty;
 
         public string City { get; set; } = string.Empty;
+
+        public string? ProfileImage { get; set; }   // 👈 صورة البروفايل
     }
 }

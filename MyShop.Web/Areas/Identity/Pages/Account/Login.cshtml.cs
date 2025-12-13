@@ -15,10 +15,10 @@ namespace MyShop.Web.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;  // ÊÚÏíá åäÇ
+        private readonly SignInManager<ApplicationUser> _signInManager;  // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)  // ÊÚÏíá åäÇ
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)  // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -75,7 +75,7 @@ namespace MyShop.Web.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return RedirectToAction("Index", "Home", new { area = "Customer" });
                 }
                 if (result.RequiresTwoFactor)
                 {

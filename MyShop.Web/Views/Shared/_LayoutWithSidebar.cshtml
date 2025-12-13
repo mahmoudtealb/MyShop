@@ -28,7 +28,7 @@
                 <li class="nav-item"><a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a></li>
                 <li class="nav-item d-none d-sm-inline-block"><a href="/" class="nav-link">Home</a></li>
             </ul>
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
                 <li class="nav-item position-relative">
                     @{
                         int? cartCount = null;
@@ -48,33 +48,43 @@
                         }
                     </a>
                 </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <form id="logoutFormNavbar" asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline m-0">
+                            <button type="submit" class="nav-link btn btn-link p-2" style="color: inherit; text-decoration: none; border: none; background: none;">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Identity/Account/Login">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Identity/Account/Register">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </li>
+                }
             </ul>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <form id="logoutFormNavbar" asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
-                    <button type="submit" class="nav-link btn btn-link" style="color: inherit; text-decoration: none;">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            }
         </nav>
 
         <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="/" class="brand-link">
-                <img src="/img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3">
+                @* <img src="/img/AdminLTELogo.png" alt="Logo" class="brand-image img-circle elevation-3"> *@
                 <span class="brand-text font-weight-light">MyShop</span>
             </a>
 
             <div class="sidebar">
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                    </div>
+                <div class="user-panel mt-3 pb-3 mb-3">
                     <div class="info">
-                        <a href="#" class="d-block">
-                            @await Component.InvokeAsync("UserInfo")
-                        </a>
+                        @await Component.InvokeAsync("UserInfo")
                     </div>
                 </div>
 
@@ -93,6 +103,15 @@
                             </a>
                         </li>
 
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a href="/Customer/Home/CreateProduct" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "CreateProduct" ? "active" : "")">
+                                    <i class="nav-icon fas fa-plus-circle"></i>
+                                    <p>Add Product</p>
+                                </a>
+                            </li>
+                        }
 
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -139,21 +158,6 @@
                                 </li>
                             }
                         }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a href="/Identity/Account/Login" class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString()?.Contains("Login") == true ? "active" : "")">
-                                    <i class="nav-icon fas fa-sign-in-alt"></i>
-                                    <p>Login</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/Identity/Account/Register" class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString()?.Contains("Register") == true ? "active" : "")">
-                                    <i class="nav-icon fas fa-user-plus"></i>
-                                    <p>Register</p>
-                                </a>
-                            </li>
-                        }
                     </ul>
                 </nav>
                 @* زر Logout في الـ Sidebar *@
@@ -173,14 +177,14 @@
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
-                        <div class="col-sm-6">
+                       @*  <div class="col-sm-6">
                             <h1>@ViewData["Title"]</h1>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </section>
 
-            <section class="content">
+            <section class="content fade-in">
                 @RenderBody()
             </section>
         </div>
@@ -197,6 +201,55 @@
 
     <!-- Toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        // Configure Toastr
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Display TempData messages
+        @if (TempData["success"] != null)
+        {
+            <text>
+            toastr.success('@TempData["success"]', 'Success');
+            </text>
+        }
+
+        @if (TempData["error"] != null)
+        {
+            <text>
+            toastr.error('@TempData["error"]', 'Error');
+            </text>
+        }
+
+        @if (TempData["info"] != null)
+        {
+            <text>
+            toastr.info('@TempData["info"]', 'Info');
+            </text>
+        }
+
+        @if (TempData["warning"] != null)
+        {
+            <text>
+            toastr.warning('@TempData["warning"]', 'Warning');
+            </text>
+        }
+    </script>
 
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>

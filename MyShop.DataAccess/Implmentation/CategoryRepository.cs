@@ -26,7 +26,7 @@ namespace MyShop.DataAccess.Implementation
             if (categoryInDb != null)
             {
                 categoryInDb.Name = category.Name;
-                categoryInDb.Discription = category.Discription;  // الاحتفاظ بالخطأ الإملائي هنا حسب رغبتك
+                categoryInDb.Description = category.Description;  // الاحتفاظ بالخطأ الإملائي هنا حسب رغبتك
                 categoryInDb.CreateTime = DateTime.Now;  // الاحتفاظ بـ CreateTime حسب رغبتك
             }
         }

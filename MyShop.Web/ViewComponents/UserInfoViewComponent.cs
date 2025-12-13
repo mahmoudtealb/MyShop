@@ -17,26 +17,26 @@ namespace MyShop.Web.ViewComponents
             _logger = logger;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             try
             {
                 if (HttpContext.User.Identity?.IsAuthenticated == true)
                 {
-                    var user = _userManager.GetUserAsync(HttpContext.User).Result;
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
                     if (user != null)
                     {
                         _logger.LogDebug($"User info retrieved for: {user.Name}");
-                        return View("Default", user.Name);
+                        return View("Default", user);
                     }
                 }
 
-                return View("Default", "Welcome Guest");
+                return View("Default", (ApplicationUser?)null);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting user info in view component");
-                return View("Default", "Welcome Guest");
+                return View("Default", (ApplicationUser?)null);
             }
         }
     }

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyShop.Entities.Repositories;
 using MyShop.Entities.ViewModels;
+using MyShop.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace MyShop.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.AdminRole)]
     public class OrderController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
